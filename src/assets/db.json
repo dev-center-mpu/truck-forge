@@ -7,6 +7,14 @@
       "height": 1200,
       "weight": 700,
       "pallets": 1
+    },
+    {
+      "id": 1,
+      "length": 2800,
+      "width": 1800,
+      "height": 1800,
+      "weight": 1000,
+      "pallets": 4
     }
   ],
   "pallets": [
