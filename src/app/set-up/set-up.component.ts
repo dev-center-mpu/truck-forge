@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {DatabaseService} from '../services/database.service';
 
 @Component({
   selector: 'app-set-up',
@@ -7,7 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SetUpComponent implements OnInit {
 
-  constructor() { }
+  private trucks: [object];
+  private pallets: [object];
+
+  constructor(private database: DatabaseService) {
+    this.trucks = this.database.trucks;
+    this.pallets = this.database.trucks;
+  }
 
   ngOnInit() {
   }
