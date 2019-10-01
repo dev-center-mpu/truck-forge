@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {DatabaseService} from '../services/database.service';
+import {DatabaseService} from '../../services/database.service';
 
 @Component({
   selector: 'app-set-up',
-  templateUrl: './set-up.component.html',
-  styleUrls: ['./set-up.component.scss']
+  templateUrl: './initial-set-up.component.html',
+  styleUrls: ['./initial-set-up.component.scss']
 })
-export class SetUpComponent implements OnInit {
+export class InitialSetUpComponent implements OnInit {
 
   private trucks: [object];
   private pallets: [object];
