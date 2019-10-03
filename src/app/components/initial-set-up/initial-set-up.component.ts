@@ -8,7 +8,7 @@ import {DatabaseService} from '../../services/database.service';
 })
 export class InitialSetUpComponent implements OnInit {
 
-  private trucks: [object];
+
   private pallets: [object];
 
   constructor(private database: DatabaseService) {
