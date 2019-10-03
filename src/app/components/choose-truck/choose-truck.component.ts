@@ -41,9 +41,4 @@ export class ChooseTruckComponent {
     }
     return value;
   }
-
-  chooseTruck(index) {
-    const truck = this.trucks[index];
-    this.chosenData.chooseTruck(truck);
-  }
 }
