@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {DatabaseService} from '../../services/database.service';
+import {ChosenDataService} from '../../services/chosen-data.service';
 
 @Component({
   selector: 'app-choose-truck',
@@ -10,7 +11,10 @@ export class ChooseTruckComponent {
 
   private readonly trucks: [object];
 
-  constructor(private database: DatabaseService) {
+  constructor(
+    private database: DatabaseService,
+    private chosenData: ChosenDataService
+  ) {
     this.trucks = this.database.trucks;
   }
 
@@ -36,5 +40,10 @@ export class ChooseTruckComponent {
         break;
     }
     return value;
+  }
+
+  chooseTruck(index) {
+    const truck = this.trucks[index];
+    this.chosenData.chooseTruck(truck);
   }
 }
