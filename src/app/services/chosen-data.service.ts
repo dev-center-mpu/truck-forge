@@ -11,4 +11,8 @@ export class ChosenDataService {
   chooseTruck(truck: object) {
     this.truck = truck;
   }
+
+  choosePallet(pallet: object) {
+    this.pallet = pallet;
+  }
 }
