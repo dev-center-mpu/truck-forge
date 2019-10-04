@@ -12,7 +12,7 @@
           <p>Высота: {{techSpecValue(i, 'height')}} м</p>
           <p>Грузоподъемность: {{truck.weight / 1000}} т</p>
           <p>Вместимость паллет: {{techSpecValue(i, 'pallets')}} шт.</p>
-          <button class="btn btn-info" (click)="chosenData.chooseTruck(truck)">Выбрать</button>
+          <button class="btn btn-info" (click)="chosenData.truck = truck">Выбрать</button>
         </div>
       </div>
       <svg class="bd-placeholder-img" width="100%" height="100%"

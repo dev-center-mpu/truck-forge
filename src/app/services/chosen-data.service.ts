@@ -5,28 +5,24 @@ import {Injectable} from '@angular/core';
 })
 export class ChosenDataService {
 
-  private truck: object;
-  private pallet: object;
-  private cargo: object[];
+  truck: object;
+  pallet: object;
+  cargo: object[];
 
   constructor() {
     this.cargo = [];
-  }
-
-  chooseTruck(truck: object) {
-    this.truck = truck;
   }
 
   truckIsChosen(): boolean {
     return this.truck !== undefined;
   }
 
-  choosePallet(pallet: object) {
-    this.pallet = pallet;
-  }
-
   palletIsChosen(): boolean {
     return this.truck !== undefined;
+  }
+
+  cargoIsChosen(): boolean {
+    return this.cargo.length !== 0;
   }
 
   addCargo(cargo: object) {
@@ -66,7 +62,4 @@ export class ChosenDataService {
     this.cargo.push(cargo);
   }
 
-  cargoIsChosen(): boolean {
-    return this.cargo.length !== 0;
-  }
 }
