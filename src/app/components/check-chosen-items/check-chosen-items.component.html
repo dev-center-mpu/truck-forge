@@ -1,0 +1,13 @@
+<div class="container">
+  <p *ngIf="chosenData.truck === undefined; else elseTruck">Грузовик не выбран.</p>
+  <ng-template #elseTruck><p>Выбранный грузовик: {{chosenData.truck.weight}}</p></ng-template>
+  <p *ngIf="chosenData.pallet === undefined; else elsePallet">Паллет не выбран.</p>
+  <ng-template #elsePallet><p>Выбранный паллет: {{chosenData.pallet.weight}}</p></ng-template>
+  <p *ngIf="!chosenData.cargoIsChosen()">Груз не выбран.</p>
+  <p *ngFor="let cargo of chosenData.cargo">
+    {{cargo.length}}x{{cargo.width}}x{{cargo.height}} мм с весом {{cargo.weight}} кг
+  </p>
+  <a [routerLink]="'/viewer'">
+    <button class="btn btn-warning" [disabled]="!settingsAreDone()">Распределить груз</button>
+  </a>
+</div>
