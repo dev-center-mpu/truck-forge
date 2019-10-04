@@ -18,8 +18,8 @@ export class ChooseTruckComponent {
     this.trucks = this.database.trucks;
   }
 
-  techSpecValue(truckIndex, valueName): string {
-    let value;
+  techSpecValue(truckIndex: number, valueName: string): string {
+    let value = '';
     const truck = this.trucks[truckIndex];
     switch (valueName) {
       case 'length':
@@ -41,4 +41,5 @@ export class ChooseTruckComponent {
     }
     return value;
   }
+
 }
