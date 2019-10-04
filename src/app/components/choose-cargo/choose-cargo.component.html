@@ -1,0 +1,25 @@
+<div class="container">
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label>
+        Длина: <input type="text" class="form-control" formControlName="length" placeholder="1200">
+      </label>
+    </div>
+    <div class="form-group">
+      <label>
+        Ширина: <input type="text" class="form-control" formControlName="width" placeholder="800">
+      </label>
+    </div>
+    <div class="form-group">
+      <label>
+        Высота: <input type="text" class="form-control" formControlName="height" placeholder="145">
+      </label>
+    </div>
+    <div class="form-group">
+      <label>
+        Вес: <input type="text" class="form-control" formControlName="weight" placeholder="80">
+      </label>
+    </div>
+    <button (click)="chosenData.addCargo(this.form.value)" type="submit" class="btn btn-success" [disabled]="!form.valid">Добавить</button>
+  </form>
+</div>
