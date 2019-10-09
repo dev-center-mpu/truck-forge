@@ -121,7 +121,6 @@ export class TruckSetUpComponent implements OnInit {
   onDocumentMouseMove(event){
     this.mouse = new THREE.Vector2(( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1);
 
-    console.log(this.viewer);
 
     var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.viewer.impl.camera);
@@ -129,7 +128,6 @@ export class TruckSetUpComponent implements OnInit {
     this.raycaster = new THREE.Raycaster(this.viewer.impl.camera.position, vector.sub(this.viewer.impl.camera.position).normalize());
 
     var intersects = this.raycaster.intersectObjects( this.viewer.impl.overlayScenes.cScene.scene.children );
-    console.log(intersects.length);
     // if there is one (or more) intersections
     if ( intersects.length > 0 )
     {
