@@ -5,12 +5,11 @@ import {
   SelectionChangedEventArgs,
   DocumentChangedEvent
 } from 'ng2-adsk-forge-viewer';
-import * as LMV from '../../../assets/viewer_v7.min.js';
 import { ACCESS_TOKEN, DOCUMENT_URN } from './config';
 
 import {Component, OnInit} from '@angular/core';
 // import * as THREE from 'three';
-declare const THREE: any
+declare const THREE: any;
 import { from } from 'rxjs';
 
 @Component({
@@ -23,11 +22,12 @@ export class TruckSetUpComponent implements OnInit {
   public viewerOptions3d: ViewerOptions;
   public thumbnailOptions: ThumbnailOptions;
   public documentId: string;
-
+  
   viewer;
+  
+  raycaster; mouse; INTERSECTED;
 
   constructor() {
-    
   }
 
   ngOnInit() {
@@ -52,7 +52,11 @@ export class TruckSetUpComponent implements OnInit {
       onViewerInitialized: (args: ViewerInitializedEvent) => {
         // Load document in the viewer
         args.viewerComponent.DocumentId = DOCUMENT_URN;
-        // console.log(args.viewer.overlays);
+        // this.mouse = new THREE.Vector2(1, 1);
+        
+        this.viewer = args.viewer;
+        console.log(this.viewer);
+        document.querySelector("#forge").addEventListener('mousemove', this.onDocumentMouseMove, false);
         this.addCustomGeom(args.viewer);
       },
     };
@@ -70,39 +74,54 @@ export class TruckSetUpComponent implements OnInit {
     }
   }
 
- 
 
   addCustomGeom(viewer){
-    // var geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
-    // var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    // var sphereMesh = new THREE.Mesh(geometry, material);
-    // sphereMesh.position.set(1, 2, 3);
-
-
-    // // if (!Viewer.overlays.hasScene('custom-scene')) {
-    // //   Viewer.addScene('custom-scene');
-    // // }
-    // //viewer.overlays.addScene('custom-scene');
-    // viewer.overlays.impl.addModel(sphereMesh);
-
-    // const geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
-    // const material = new THREE.MeshBasicMaterial({ color: 0x336699 });
-    // const mesh = new THREE.Mesh(geometry, material);
-    // mesh.position.x = 0.0; mesh.position.y = 0.0; mesh.position.z = 0.0;
-    // // Add scene and mesh
-    // var scene = new THREE.Scene();
-    // viewer.overlays.addScene(scene);
-
-    // viewer.overlays.impl.scene.children.push(scene);
-    // // viewer.overlays.addMesh([mesh], scene);
-    // console.log(viewer.overlays);
-
-    const geom = new THREE.SphereGeometry(10, 8, 8);
+    const geom = new THREE.BoxGeometry( 20, 1, 20 );
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     const sphereMesh = new THREE.Mesh(geom, material);
-    sphereMesh.position.set(1, 2, 3);
-    viewer.overlays.impl.createOverlayScene('custom-scene');
-    viewer.overlays.impl.addOverlay('custom-scene', sphereMesh);
+    sphereMesh.position.set(100, 2, 3);
+    viewer.impl.createOverlayScene('cScene');
+    viewer.impl.addOverlay('cScene', sphereMesh);
     viewer.overlays.impl.invalidate(true);
+
+    this.viewer = viewer;
+  }
+
+  onDocumentMouseMove(event){
+    this.mouse = new THREE.Vector2(( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1);
+
+    var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
+    vector.unproject(this.viewer.impl.camera);
+    
+    this.raycaster = new THREE.Raycaster(this.viewer.impl.camera.position, vector.sub(this.viewer.impl.camera.position).normalize());
+
+    var intersects = this.raycaster.intersectObjects( this.viewer.impl.overlayScenes.cScene.scene.children );
+    console.log(intersects.length);
+    // if there is one (or more) intersections
+    if ( intersects.length > 0 )
+    {
+      // if the closest object intersected is not the currently stored intersection object
+      if ( intersects[ 0 ].object != this.INTERSECTED )
+      {
+        // restore previous intersection object (if it exists) to its original color
+        if ( this.INTERSECTED )
+        this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
+        // store reference to closest object as current intersection object
+        this.INTERSECTED = intersects[ 0 ].object;
+        // store color of closest object (for later restoration)
+        this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
+        // set a new color for closest object
+        this.INTERSECTED.material.color.setHex( 0x080708 );
+      }
+    }
+    else // there are no intersections
+    {
+      // restore previous intersection object (if it exists) to its original color
+      if ( this.INTERSECTED )
+        this.INTERSECTED.material.color.setHex( this.INTERSECTED.currentHex );
+        // remove previous intersection object reference
+        //     by setting current intersection object to "nothing"
+        this.INTERSECTED = null;
+    } 
   }
 }
