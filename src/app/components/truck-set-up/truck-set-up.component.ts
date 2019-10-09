@@ -10,6 +10,7 @@ import { ACCESS_TOKEN, DOCUMENT_URN } from './config';
 import {Component, OnInit} from '@angular/core';
 // import * as THREE from 'three';
 declare const THREE: any;
+import * as projector from "three/examples/js/renderers/Projector.js"
 import { from } from 'rxjs';
 
 @Component({
@@ -28,9 +29,6 @@ export class TruckSetUpComponent implements OnInit {
   raycaster; mouse; INTERSECTED;
 
   constructor() {
-  }
-
-  ngOnInit() {
     this.thumbnailOptions = {
       getAccessToken: (onGetAccessToken: (token: string, expire: number) => void) => {
         const expireTimeSeconds = 60 * 30 * 1000;
@@ -56,10 +54,43 @@ export class TruckSetUpComponent implements OnInit {
         
         this.viewer = args.viewer;
         console.log(this.viewer);
-        document.querySelector("#forge").addEventListener('mousemove', this.onDocumentMouseMove, false);
+        document.querySelector("#forge").addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
         this.addCustomGeom(args.viewer);
       },
     };
+
+  }
+
+  ngOnInit() {
+    // this.thumbnailOptions = {
+    //   getAccessToken: (onGetAccessToken: (token: string, expire: number) => void) => {
+    //     const expireTimeSeconds = 60 * 30 * 1000;
+    //     onGetAccessToken(ACCESS_TOKEN, expireTimeSeconds);
+    //   },
+    //   documentId: DOCUMENT_URN,
+    //   width: 400,
+    //   height: 400,
+    // };
+
+    // this.viewerOptions3d = {
+    //   initializerOptions: {
+    //     env: 'AutodeskProduction',
+    //     getAccessToken: (onGetAccessToken: (token: string, expire: number) => void) => {
+    //       const expireTimeSeconds = 60 * 30;
+    //       onGetAccessToken(ACCESS_TOKEN, expireTimeSeconds);
+    //     },
+    //   },
+    //   onViewerInitialized: (args: ViewerInitializedEvent) => {
+    //     // Load document in the viewer
+    //     args.viewerComponent.DocumentId = DOCUMENT_URN;
+    //     // this.mouse = new THREE.Vector2(1, 1);
+        
+    //     this.viewer = args.viewer;
+    //     console.log(this.viewer);
+    //     document.querySelector("#forge").addEventListener('mousemove', this.onDocumentMouseMove, false);
+    //     this.addCustomGeom(args.viewer);
+    //   },
+    // };
 
   }
 
@@ -89,6 +120,8 @@ export class TruckSetUpComponent implements OnInit {
 
   onDocumentMouseMove(event){
     this.mouse = new THREE.Vector2(( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1);
+
+    console.log(this.viewer);
 
     var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.viewer.impl.camera);
