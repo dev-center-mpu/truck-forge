@@ -6,6 +6,9 @@ const request = require('request').defaults({
 
 const app = express();
 
+app.use(cors());
+app.use(express.static('public'));
+
 let expireTime = Date.now();
 let token = '';
 
@@ -23,15 +26,11 @@ let options = {
     }
 };
 
-app.use(express.static('public'));
-app.use(cors());
-
 app.get('/auth', (req, res) => {
     if (!token || Date.now() > expireTime) {
         request(options, (e, r, body) => {
             token = body; // use the entire body as token
             expireTime = Date.now() + JSON.parse(body).expires_in;
-            console.log(token);
             res.send(token);
         });
     } else {
