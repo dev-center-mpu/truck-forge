@@ -9,6 +9,8 @@ import {ChoosePalletComponent} from './components/choose-pallet/choose-pallet.co
 import {ChooseCargoComponent} from './components/choose-cargo/choose-cargo.component';
 import {TruckSetUpComponent} from './components/truck-set-up/truck-set-up.component';
 import {ViewerModule} from 'ng2-adsk-forge-viewer';
+import {CheckChosenItemsComponent} from './components/check-chosen-items/check-chosen-items.component';
+import {TruckSetUpComponent} from './components/truck-set-up/truck-set-up.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,8 @@ import {ViewerModule} from 'ng2-adsk-forge-viewer';
     TruckSetUpComponent,
     ChooseTruckComponent,
     ChoosePalletComponent,
-    ChooseCargoComponent
+    ChooseCargoComponent,
+    CheckChosenItemsComponent
   ],
   imports: [
     BrowserModule,
