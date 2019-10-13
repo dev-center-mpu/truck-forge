@@ -3,6 +3,7 @@ import {OnInit} from '@angular/core';
 import {isNullOrUndefined} from 'util';
 import {ViewerInitializedEvent, ViewerOptions, ThumbnailOptions, DocumentChangedEvent} from 'ng2-adsk-forge-viewer';
 import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
+import {ChosenDataService} from '../../services/chosen-data.service';
 
 declare const THREE: any;
 
@@ -22,13 +23,14 @@ export class TruckSetUpComponent implements OnInit {
   public mouse;
   public INTERSECTED;
 
-  constructor(private serverForgeConnection: ServerForgeConnectionService) { }
-
+  constructor(private serverForgeConnection: ServerForgeConnectionService, private x: ChosenDataService) { 
+    
+  }
   async ngOnInit() {
     const serverData = this.serverForgeConnection.getData();
     const authData = isNullOrUndefined(serverData) ? {} : await serverData;
     const token = authData.access_token;
-    const documentUrn = this.serverForgeConnection.documentUrn;
+    const documentUrn = "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMy4xLDk1LjIsMnRydWNrLnN0cA";
     this.thumbnailOptions = {
       getAccessToken: (onGetAccessToken: (token: string, expire: number) => void) => {
         const expireTimeSeconds = 60 * 30 * 1000;
@@ -53,7 +55,7 @@ export class TruckSetUpComponent implements OnInit {
         // this.mouse = new THREE.Vector2(1, 1);
 
         this.viewer = args.viewer;
-        console.log(this.viewer);
+        //console.log(this.viewer);
         document.querySelector('#forge').addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
         this.addCustomGeom(args.viewer);
       },
@@ -74,14 +76,50 @@ export class TruckSetUpComponent implements OnInit {
   }
 
   addCustomGeom(viewer) {
-    const geom = new THREE.BoxGeometry(20, 1, 20);
+    const sphereMesh = [];
+    var inMass1 = []; var inMass2 = [];
+    sphereMesh[1]=inMass1;
+    sphereMesh[2]=inMass2;
+    const geom = new THREE.BoxGeometry(800, 1200, 145);
     const material = new THREE.MeshBasicMaterial({color: 0xff0000});
-    const sphereMesh = new THREE.Mesh(geom, material);
-    sphereMesh.position.set(100, 2, 3);
-    viewer.impl.createOverlayScene('cScene');
-    viewer.impl.addOverlay('cScene', sphereMesh);
-    viewer.overlays.impl.invalidate(true);
 
+    // let wtruck = this.x.truck.width;
+
+    // let htruck = this.x.truck.height;
+
+    // let ltruck = this.x.truck.length;
+
+    // let wpalet = this.x.pallet.width;
+
+    // let hpalet = this.x.pallet.height;
+
+    // let lpalet = this.x.pallet.length;
+    let wtruck =1200;
+    let htruck =1000;
+    let ltruck =1200;
+    let wpalet =1200;
+    let hpalet =145;
+    let lpalet =800;
+    console.log(wtruck);
+    let j=0;
+    while (ltruck>j*lpalet)
+    {
+      j++;
+      
+    } 
+    // countOfAllPalletsInLenth = j;
+    console.log(wtruck);
+    for (var i = 0; i < 3; i++)
+    {
+      sphereMesh[i] = new THREE.Mesh(geom, material);
+      sphereMesh[i].position.set((j-i-1)*(wpalet-200), 0, htruck-200); // count for borders and positions near them selfs
+    }
+    viewer.impl.createOverlayScene('cScene');
+    for (var i=0;i< 3;i++)
+    {
+    viewer.impl.addOverlay('cScene', sphereMesh[i]);
+    }
+    viewer.overlays.impl.invalidate(true);
     this.viewer = viewer;
   }
 
