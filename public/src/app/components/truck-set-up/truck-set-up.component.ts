@@ -80,45 +80,47 @@ export class TruckSetUpComponent implements OnInit {
     var inMass1 = []; var inMass2 = [];
     sphereMesh[1]=inMass1;
     sphereMesh[2]=inMass2;
-    const geom = new THREE.BoxGeometry(800, 1200, 145);
+    const geom = new THREE.BoxGeometry(800, 145 , 1200);
     const material = new THREE.MeshBasicMaterial({color: 0xff0000});
-
-    // let wtruck = this.x.truck.width;
-
-    // let htruck = this.x.truck.height;
-
-    // let ltruck = this.x.truck.length;
-
-    // let wpalet = this.x.pallet.width;
-
-    // let hpalet = this.x.pallet.height;
-
-    // let lpalet = this.x.pallet.length;
-    let wtruck =1200;
-    let htruck =1000;
-    let ltruck =1200;
-    let wpalet =1200;
-    let hpalet =145;
-    let lpalet =800;
+    console.log(this.x.truck);
+    //@ts-ignore
+    let wtruck =this.x.truck.maxWidth;
+      //@ts-ignore
+      console.log(this.x.truck.maxWidth);
+    //@ts-ignore
+    let htruck =this.x.truck.maxHeight;
+      //@ts-ignore
+      console.log(this.x.truck.maxHeight);
+    //@ts-ignore
+    let ltruck =this.x.truck.maxLength;
+      //@ts-ignore
+      console.log(this.x.truck.maxLength);
+    //@ts-ignore
+    let wpalet =this.x.pallet.width;
+      //@ts-ignore
+      console.log(this.x.pallet.width);
+    //@ts-ignore
+    let lpalet =this.x.pallet.length;
+      //@ts-ignore
+      console.log(this.x.pallet.length);
     console.log(wtruck);
-    let j=0;
+    let j=1;
     while (ltruck>j*lpalet)
     {
       j++;
-      
     } 
-    // countOfAllPalletsInLenth = j;
-    console.log(wtruck);
-    for (var i = 0; i < 3; i++)
+    for (var i = 0; i <= j; i++)
     {
       sphereMesh[i] = new THREE.Mesh(geom, material);
-      sphereMesh[i].position.set((j-i-1)*(wpalet-200), 0, htruck-200); // count for borders and positions near them selfs
+      sphereMesh[i].position.set((j-i-1)*(wpalet+200), 0, htruck-300);
     }
     viewer.impl.createOverlayScene('cScene');
-    for (var i=0;i< 3;i++)
+    for (var i=0;i<= j;i++)
     {
     viewer.impl.addOverlay('cScene', sphereMesh[i]);
+    console.log(i);
     }
+    console.log(sphereMesh);
     viewer.overlays.impl.invalidate(true);
     this.viewer = viewer;
   }
