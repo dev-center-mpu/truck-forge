@@ -112,7 +112,7 @@ export class TruckSetUpComponent implements OnInit {
     for (var i = 0; i <= j; i++)
     {
       sphereMesh[i] = new THREE.Mesh(geom, material);
-      sphereMesh[i].position.set((j-i-1)*(wpalet+200), 0, htruck-300);
+      sphereMesh[i].position.set((j-i-1)*(wpalet+200), (htruck-300)*(-1), 0);
     }
     viewer.impl.createOverlayScene('cScene');
     for (var i=0;i<= j;i++)
