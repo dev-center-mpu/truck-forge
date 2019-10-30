@@ -19,5 +19,4 @@ export class ChooseCargoComponent {
       weight: new FormControl(null, [Validators.required])
     });
   }
-
 }

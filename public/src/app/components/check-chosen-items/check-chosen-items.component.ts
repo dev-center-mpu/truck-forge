@@ -14,5 +14,4 @@ export class CheckChosenItemsComponent {
   settingsAreDone(): boolean {
     return this.chosenData.truckIsChosen() && this.chosenData.palletIsChosen() && this.chosenData.cargoIsChosen();
   }
-
 }

@@ -1,9 +1,9 @@
-import {Component} from '@angular/core';
-import {OnInit} from '@angular/core';
-import {isNullOrUndefined} from 'util';
-import {ViewerInitializedEvent, ViewerOptions, ThumbnailOptions, DocumentChangedEvent} from 'ng2-adsk-forge-viewer';
-import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
-import {ChosenDataService} from '../../services/chosen-data.service';
+import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { ViewerInitializedEvent, ViewerOptions, ThumbnailOptions, DocumentChangedEvent } from 'ng2-adsk-forge-viewer';
+import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
+import { ChosenDataService } from '../../services/chosen-data.service';
 
 declare const THREE: any;
 
@@ -23,14 +23,16 @@ export class TruckSetUpComponent implements OnInit {
   public mouse;
   public INTERSECTED;
 
-  constructor(private serverForgeConnection: ServerForgeConnectionService, private x: ChosenDataService) { 
-    
+  constructor(
+    private serverForgeConnection: ServerForgeConnectionService,
+    private chosenData: ChosenDataService) {
   }
+
   async ngOnInit() {
     const serverData = this.serverForgeConnection.getData();
     const authData = isNullOrUndefined(serverData) ? {} : await serverData;
     const token = authData.access_token;
-    const documentUrn = "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMy4xLDk1LjIsMnRydWNrLnN0cA";
+    const documentUrn = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMy4xLDk1LjIsMnRydWNrLnN0cA';
     this.thumbnailOptions = {
       getAccessToken: (onGetAccessToken: (token: string, expire: number) => void) => {
         const expireTimeSeconds = 60 * 30 * 1000;
@@ -50,12 +52,8 @@ export class TruckSetUpComponent implements OnInit {
         },
       },
       onViewerInitialized: (args: ViewerInitializedEvent) => {
-        // Load document in the viewer
         args.viewerComponent.DocumentId = documentUrn;
-        // this.mouse = new THREE.Vector2(1, 1);
-
         this.viewer = args.viewer;
-        //console.log(this.viewer);
         document.querySelector('#forge').addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
         this.addCustomGeom(args.viewer);
       },
@@ -77,48 +75,36 @@ export class TruckSetUpComponent implements OnInit {
 
   addCustomGeom(viewer) {
     const sphereMesh = [];
-    var inMass1 = []; var inMass2 = [];
-    sphereMesh[1]=inMass1;
-    sphereMesh[2]=inMass2;
-    const geom = new THREE.BoxGeometry(800, 145 , 1200);
+    const inMass1 = [];
+    const inMass2 = [];
+    sphereMesh[1] = inMass1;
+    sphereMesh[2] = inMass2;
+    const geom = new THREE.BoxGeometry(800, 145, 1200);
     const material = new THREE.MeshBasicMaterial({color: 0xff0000});
-    console.log(this.x.truck);
-    //@ts-ignore
-    let wtruck =this.x.truck.maxWidth;
-      //@ts-ignore
-      console.log(this.x.truck.maxWidth);
-    //@ts-ignore
-    let htruck =this.x.truck.maxHeight;
-      //@ts-ignore
-      console.log(this.x.truck.maxHeight);
-    //@ts-ignore
-    let ltruck =this.x.truck.maxLength;
-      //@ts-ignore
-      console.log(this.x.truck.maxLength);
-    //@ts-ignore
-    let wpalet =this.x.pallet.width;
-      //@ts-ignore
-      console.log(this.x.pallet.width);
-    //@ts-ignore
-    let lpalet =this.x.pallet.length;
-      //@ts-ignore
-      console.log(this.x.pallet.length);
-    console.log(wtruck);
-    let j=1;
-    while (ltruck>j*lpalet)
-    {
+    console.log(this.chosenData.truck);
+
+    const truckWidth = this.chosenData.truck.width;
+    const truckHeight = this.chosenData.truck.height;
+    const truckLength = this.chosenData.truck.length;
+
+    const palletWidth = this.chosenData.pallet.width;
+    const palletLength = this.chosenData.pallet.length;
+
+    let j = 1;
+    while (truckLength > j * palletLength) {
       j++;
-    } 
-    for (var i = 0; i <= j; i++)
-    {
-      sphereMesh[i] = new THREE.Mesh(geom, material);
-      sphereMesh[i].position.set((j-i-1)*(wpalet+200), (htruck-300)*(-1), 0);
     }
+
+    for (let i = 0; i <= j; i++) {
+      sphereMesh[i] = new THREE.Mesh(geom, material);
+      sphereMesh[i].position.set((j - i - 1) * (palletWidth + 200), (truckHeight - 300) * (-1), 0);
+    }
+
     viewer.impl.createOverlayScene('cScene');
-    for (var i=0;i<= j;i++)
-    {
-    viewer.impl.addOverlay('cScene', sphereMesh[i]);
-    console.log(i);
+
+    for (let i = 0; i <= j; i++) {
+      viewer.impl.addOverlay('cScene', sphereMesh[i]);
+      console.log(i);
     }
     console.log(sphereMesh);
     viewer.overlays.impl.invalidate(true);
@@ -128,14 +114,12 @@ export class TruckSetUpComponent implements OnInit {
   onDocumentMouseMove(event) {
     this.mouse = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1);
 
-
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.viewer.impl.camera);
 
     this.raycaster = new THREE.Raycaster(this.viewer.impl.camera.position, vector.sub(this.viewer.impl.camera.position).normalize());
 
     const intersects = this.raycaster.intersectObjects(this.viewer.impl.overlayScenes.cScene.scene.children);
-    // if there is one (or more) intersections
     if (intersects.length > 0) {
       // if the closest object intersected is not the currently stored intersection object
       if (intersects[0].object !== this.INTERSECTED) {
