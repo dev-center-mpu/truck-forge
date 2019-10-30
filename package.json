@@ -2,13 +2,13 @@
   "name": "truck-forge",
   "version": "0.0.0",
   "scripts": {
-    "server": "node index.js",
+    "server": "node server/index.js",
     "ng": "ng",
-    "start": "cd public; ng serve",
-    "build": "cd public; ng build",
-    "test": "cd public; ng test",
-    "lint": "cd public; ng lint",
-    "e2e": "cd public; ng e2e"
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {

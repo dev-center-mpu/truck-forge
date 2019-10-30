@@ -29,7 +29,7 @@ let options = {
 app.get('/auth', (req, res) => {
     if (!token || Date.now() > expireTime) {
         request(options, (e, r, body) => {
-            token = body; // use the entire body as token
+            token = body;
             expireTime = Date.now() + JSON.parse(body).expires_in;
             res.send(token);
         });
