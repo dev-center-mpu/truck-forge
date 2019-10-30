@@ -1,9 +1,7 @@
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { ViewerInitializedEvent, ViewerOptions, ThumbnailOptions, DocumentChangedEvent } from 'ng2-adsk-forge-viewer';
-import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
-import { ChosenDataService } from '../../services/chosen-data.service';
+import {Component, OnInit} from '@angular/core';
+import {DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions} from 'ng2-adsk-forge-viewer';
+import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
+import {ChosenDataService} from '../../services/chosen-data.service';
 
 declare const THREE: any;
 
@@ -29,8 +27,7 @@ export class TruckSetUpComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const serverData = this.serverForgeConnection.getData();
-    const authData = isNullOrUndefined(serverData) ? {} : await serverData;
+    const authData = await this.serverForgeConnection.getData();
     const token = authData.access_token;
     const documentUrn = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMy4xLDk1LjIsMnRydWNrLnN0cA';
     this.thumbnailOptions = {
@@ -54,7 +51,8 @@ export class TruckSetUpComponent implements OnInit {
       onViewerInitialized: (args: ViewerInitializedEvent) => {
         args.viewerComponent.DocumentId = documentUrn;
         this.viewer = args.viewer;
-        document.querySelector('#forge').addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
+        document.querySelector('#forge')
+          .addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
         this.addCustomGeom(args.viewer);
       },
     };

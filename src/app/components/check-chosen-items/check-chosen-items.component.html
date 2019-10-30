@@ -4,8 +4,8 @@
   <p *ngIf="chosenData.pallet === undefined; else elsePallet">Паллет не выбран.</p>
   <ng-template #elsePallet><p>Выбранный паллет: {{chosenData.pallet.weight}} кг</p></ng-template>
   <p *ngIf="!chosenData.cargoIsChosen()">Груз не выбран.</p>
-  <p *ngFor="let cargo of chosenData.cargo">
-    {{cargo.length}}x{{cargo.width}}x{{cargo.height}} мм с весом {{cargo.weight}} кг
+  <p *ngFor="let crate of chosenData.cargo">
+    {{crate.length}}x{{crate.width}}x{{crate.height}} мм с весом {{crate.weight}} кг
   </p>
   <a [routerLink]="'/viewer'">
     <button class="btn btn-warning" [disabled]="!settingsAreDone()">Распределить груз</button>

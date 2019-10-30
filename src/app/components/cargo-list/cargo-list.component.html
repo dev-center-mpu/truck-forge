@@ -1,0 +1,6 @@
+<button class="btn btn-warning" [routerLink]="'/'">Вернуться</button>
+<div>
+  <button *ngFor="let crate of chosenData.cargo" (click)="chooseCrate(crate)">
+    {{crate.length}}x{{crate.width}}x{{crate.height}} мм с весом {{crate.weight}} кг
+  </button>
+</div>
