@@ -5,4 +5,5 @@ export interface Truck {
   height: number;
   weight: number;
   pallets: number;
+  urn: string;
 }

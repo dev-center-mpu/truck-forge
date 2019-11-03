@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions} from 'ng2-adsk-forge-viewer';
-import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
-import {ChosenDataService} from '../../services/chosen-data.service';
+import { Component, OnInit } from '@angular/core';
+import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
+import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
+import { ChosenDataService } from '../../services/chosen-data.service';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 declare const THREE: any;
 
@@ -29,7 +30,7 @@ export class TruckSetUpComponent implements OnInit {
   async ngOnInit() {
     const authData = await this.serverForgeConnection.getData();
     const token = authData.access_token;
-    const documentUrn = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMy4xLDk1LjIsMnRydWNrLnN0cA';
+    const documentUrn = this.chosenData.truck.urn;
     this.thumbnailOptions = {
       getAccessToken: (onGetAccessToken: (token: string, expire: number) => void) => {
         const expireTimeSeconds = 60 * 30 * 1000;
@@ -51,62 +52,31 @@ export class TruckSetUpComponent implements OnInit {
       onViewerInitialized: (args: ViewerInitializedEvent) => {
         args.viewerComponent.DocumentId = documentUrn;
         this.viewer = args.viewer;
-        document.querySelector('#forge')
-          .addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
+        // document.querySelector('#forge')
+        // .addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
+        this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, this.onDocumentMouseClick.bind(this));
         this.addCustomGeom(args.viewer);
       },
     };
   }
 
   public documentChanged(event: DocumentChangedEvent) {
-    const {document} = event;
+    const { document } = event;
 
     if (!document.getRoot()) {
       return;
     }
 
-    const viewables = document.getRoot().search({type: 'geometry', role: '2d'});
+    const viewables = document.getRoot().search({ type: 'geometry', role: '2d' });
     if (viewables && viewables.length > 0) {
       event.viewerComponent.loadDocumentNode(document, viewables[0]);
     }
   }
 
   addCustomGeom(viewer) {
-    const sphereMesh = [];
-    const inMass1 = [];
-    const inMass2 = [];
-    sphereMesh[1] = inMass1;
-    sphereMesh[2] = inMass2;
-    const geom = new THREE.BoxGeometry(800, 145, 1200);
-    const material = new THREE.MeshBasicMaterial({color: 0xff0000});
-    console.log(this.chosenData.truck);
-
-    const truckWidth = this.chosenData.truck.width;
-    const truckHeight = this.chosenData.truck.height;
-    const truckLength = this.chosenData.truck.length;
-
-    const palletWidth = this.chosenData.pallet.width;
-    const palletLength = this.chosenData.pallet.length;
-
-    let j = 1;
-    while (truckLength > j * palletLength) {
-      j++;
-    }
-
-    for (let i = 0; i <= j; i++) {
-      sphereMesh[i] = new THREE.Mesh(geom, material);
-      sphereMesh[i].position.set((j - i - 1) * (palletWidth + 200), (truckHeight - 300) * (-1), 0);
-    }
-
-    viewer.impl.createOverlayScene('cScene');
-
-    for (let i = 0; i <= j; i++) {
-      viewer.impl.addOverlay('cScene', sphereMesh[i]);
-      console.log(i);
-    }
-    console.log(sphereMesh);
     viewer.overlays.impl.invalidate(true);
     this.viewer = viewer;
+    this.viewer.impl.createOverlayScene('cScene');
   }
 
   onDocumentMouseMove(event) {
@@ -141,5 +111,40 @@ export class TruckSetUpComponent implements OnInit {
       //     by setting current intersection object to "nothing"
       this.INTERSECTED = null;
     }
+  }
+
+  onDocumentMouseClick(event) {
+    const sphereMesh = [];
+    const inMass1 = [];
+    const inMass2 = [];
+    sphereMesh[1] = inMass1;
+    sphereMesh[2] = inMass2;
+
+    const palletHeight = this.chosenData.pallet.height;
+    // const palletCount = this.chosenData.truck.pallets;
+
+    let rotatedNodeId = this.viewer.getSelection()[0];
+    let rotatedBody = { nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null };
+    rotatedBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(rotatedNodeId);
+
+    rotatedBody.fragProxy = this.viewer.impl.getFragmentProxy(this.viewer.impl.model, rotatedBody.fragId);
+    rotatedBody.fragProxy.getAnimTransform();
+
+    rotatedBody.worldMatrix = new THREE.Matrix4();
+    rotatedBody.fragProxy.getWorldMatrix(rotatedBody.worldMatrix);
+
+    // Центр выбранной детали
+    rotatedBody.position = new THREE.Vector3();
+    rotatedBody.position.copy(rotatedBody.worldMatrix.getPosition().clone());
+
+    const geom = new THREE.BoxGeometry(this.chosenData.crate.width, this.chosenData.crate.height, this.chosenData.crate.length);
+    const texture = new THREE.TextureLoader().load( "../../../assets/crate.gif" );
+    const material = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( "../../../assets/crate.gif" ) } );
+    console.log(material.map);
+    sphereMesh[0] = new THREE.Mesh(geom, material);
+    sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight, rotatedBody.position.z);
+    this.viewer.impl.addOverlay('cScene', sphereMesh[0]);
+
+    this.viewer.overlays.impl.invalidate(true);
   }
 }

@@ -17,9 +17,9 @@ export class ChosenDataService {
     this.cargo = [];
 
     // TODO: Delete above lines.
-    this.truck = {weight: 700, length: 1200, width: 1000, height: 1200, pallets: 1};
+    this.truck = {weight: 700, length: 1200, width: 1000, height: 1200, pallets: 2, urn: "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMS0yXzFfMS0yLnN0cA"};
     this.pallet = {length: 1200, width: 800, height: 145, weight: 5};
-    this.cargo = [{weight: 700, length: 1200, width: 800, height: 145}];
+    this.cargo = [{weight: 700, length: 1200, width: 800, height: 145}, {weight: 700, length: 1000, width: 500, height: 200}];
   }
 
   truckIsChosen(): boolean {
