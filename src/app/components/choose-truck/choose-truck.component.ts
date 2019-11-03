@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {DatabaseService} from '../../services/database.service';
 import {ChosenDataService} from '../../services/chosen-data.service';
+import Truck from '../../interfaces/truck';
 
 @Component({
   selector: 'app-choose-truck',
@@ -9,7 +10,7 @@ import {ChosenDataService} from '../../services/chosen-data.service';
 })
 export class ChooseTruckComponent {
 
-  private readonly trucks: [object];
+  readonly trucks: Truck[];
 
   constructor(
     private database: DatabaseService,

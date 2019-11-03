@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {Truck} from '../interfaces/truck';
-import {Pallet} from '../interfaces/pallet';
-import {Cargo} from '../interfaces/cargo';
+import Truck from '../interfaces/truck';
+import Pallet from '../interfaces/pallet';
+import Cargo from '../interfaces/cargo';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class ChosenDataService {
     return this.cargo.length !== 0;
   }
 
-  addCargo(cargo: Cargo) {
+  addCrate(crate: Cargo) {
     if (!this.truckIsChosen()) {
       alert('Вы не выбрали грузовик.');
       return;
@@ -50,21 +50,53 @@ export class ChosenDataService {
       return;
     }
 
-    if (cargo.length > this.pallet.length || cargo.width > this.pallet.width || cargo.height > this.pallet.height) {
+    if (crate.length > this.pallet.length || crate.width > this.pallet.width || crate.height > this.pallet.height) {
       alert('Груз не поместится на паллет.');
       return;
     }
 
     let currentWeight = 0;
-    this.cargo.map(crate => {
-      currentWeight += Number(crate.weight) + Number(this.pallet.weight);
+    this.cargo.map(obj => {
+      currentWeight += +obj.weight + +this.pallet.weight;
     });
 
-    if (Number(currentWeight) + Number(this.pallet.weight) + Number(cargo.weight) > this.truck.weight) {
+    if (+currentWeight + +this.pallet.weight + +crate.weight > this.truck.weight) {
       alert('Вес всего груза будет больше грузоподъемности грузовика.');
       return;
     }
 
-    this.cargo.push(cargo);
+    this.cargo.push(crate);
+  }
+
+  selectCrate(crate: Cargo) {
+    if (this.crate !== undefined) {
+      return;
+    }
+    this.crate = crate;
+    for (let i = 0; i < this.cargo.length; i++) {
+      const obj = this.cargo[i];
+      const length: boolean = obj.length === crate.length;
+      const width: boolean = obj.width === crate.width;
+      const height: boolean = obj.height === crate.height;
+      const weight: boolean = obj.weight === crate.weight;
+      if (length && width && height && weight) {
+        this.cargo.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  unselectCrate() {
+    if (this.crate === undefined) {
+      return;
+    }
+    this.cargo.push(this.crate);
+    this.crate = undefined;
+  }
+
+  crateDisplayData(): string {
+    return this.crate === undefined
+      ? 'Груз не выбран'
+      : `${this.crate.length}x${this.crate.width}x${this.crate.height} мм с весом ${this.crate.weight} кг`;
   }
 }

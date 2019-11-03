@@ -11,8 +11,6 @@ export class ServerForgeConnectionService {
   private url = 'http://127.0.0.1:3000/auth';
   private options: HttpHeaders;
 
-  public documentUrn = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvQmFzZS5pcHQ';
-
   constructor(public http: HttpClient) {
     this.options = new HttpHeaders();
     this.options = this.options.set('Content-Type', 'application/json');

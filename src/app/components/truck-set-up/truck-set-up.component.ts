@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
 import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
 import { ChosenDataService } from '../../services/chosen-data.service';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 declare const THREE: any;
 

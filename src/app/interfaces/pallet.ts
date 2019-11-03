@@ -1,4 +1,4 @@
-export interface Pallet {
+export default interface Pallet {
   id?: number;
   width: number;
   length: number;

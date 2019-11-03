@@ -1,4 +1,4 @@
-export interface Truck {
+export default interface Truck {
   id?: number;
   width: number;
   length: number;
