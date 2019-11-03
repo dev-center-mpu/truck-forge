@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions} from 'ng2-adsk-forge-viewer';
 import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
 import {ChosenDataService} from '../../services/chosen-data.service';
@@ -10,7 +10,7 @@ declare const THREE: any;
   templateUrl: './truck-set-up.component.html',
   styleUrls: ['./truck-set-up.component.scss']
 })
-export class TruckSetUpComponent implements OnInit {
+export class TruckSetUpComponent implements OnInit, OnDestroy {
 
   viewer;
 
@@ -55,6 +55,12 @@ export class TruckSetUpComponent implements OnInit {
     };
   }
 
+  ngOnDestroy() {
+    this.viewer = undefined;
+    this.viewerOptions3d = undefined;
+    this.thumbnailOptions = undefined;
+  }
+
   documentChanged(event: DocumentChangedEvent) {
     const {document} = event;
 
@@ -74,7 +80,7 @@ export class TruckSetUpComponent implements OnInit {
     this.viewer.impl.createOverlayScene('cScene');
   }
 
-  onDocumentMouseClick(event) {
+  onDocumentMouseClick() {
     const sphereMesh = [];
     const inMass1 = [];
     const inMass2 = [];
