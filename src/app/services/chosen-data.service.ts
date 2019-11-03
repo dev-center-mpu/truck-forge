@@ -50,8 +50,13 @@ export class ChosenDataService {
       return;
     }
 
-    if (crate.length > this.pallet.length || crate.width > this.pallet.width || crate.height > this.pallet.height) {
+    if (crate.length > this.pallet.length || crate.width > this.pallet.width) {
       alert('Груз не поместится на паллет.');
+      return;
+    }
+
+    if (crate.height > this.truck.height - this.pallet.height) {
+      alert('Груз не поместится по высоте');
       return;
     }
 
