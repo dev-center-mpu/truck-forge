@@ -1,9 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
-import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
-import { ChosenDataService } from '../../services/chosen-data.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions} from 'ng2-adsk-forge-viewer';
+import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
+import {ChosenDataService} from '../../services/chosen-data.service';
+import Cargo from '../../interfaces/cargo';
 
 declare const THREE: any;
+
+interface ViewerPallet {
+  id: number;
+  crate: Cargo;
+}
 
 @Component({
   selector: 'app-truck-set-up',
@@ -17,10 +23,13 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   viewerOptions3d: ViewerOptions;
   thumbnailOptions: ThumbnailOptions;
 
+  pallets: Array<ViewerPallet[]>;
+
   constructor(
     private serverForgeConnection: ServerForgeConnectionService,
     private chosenData: ChosenDataService
   ) {
+    this.pallets = [];
   }
 
   async ngOnInit() {
@@ -59,16 +68,17 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     this.viewer = undefined;
     this.viewerOptions3d = undefined;
     this.thumbnailOptions = undefined;
+    this.pallets = undefined;
   }
 
   documentChanged(event: DocumentChangedEvent) {
-    const { document } = event;
+    const {document} = event;
 
     if (!document.getRoot()) {
       return;
     }
 
-    const viewables = document.getRoot().search({ type: 'geometry', role: '2d' });
+    const viewables = document.getRoot().search({type: 'geometry', role: '2d'});
     if (viewables && viewables.length > 0) {
       event.viewerComponent.loadDocumentNode(document, viewables[0]).then();
     }
@@ -78,20 +88,40 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     viewer.overlays.impl.invalidate(true);
     this.viewer = viewer;
     this.viewer.impl.createOverlayScene('cScene');
+
+    const pallets = [];
+    for (const array of this.chosenData.truck.palletsId) {
+      const palletsLine = [];
+      for (const value of array) {
+        palletsLine.push({id: value, crate: undefined});
+      }
+      pallets.push(palletsLine);
+    }
+    this.pallets = pallets;
   }
 
   addCrateOnScene() {
+    const crate = this.chosenData.crate;
+    if (crate === undefined) {
+      return;
+    }
+
     let id: number;
-    const palletsId = this.chosenData.truck.palletsId;
-    loop: for (const array of palletsId) {
-      for (const value of array) {
+    loop: for (const palletsLine of this.pallets) {
+      for (const pallet of palletsLine) {
         const partId = this.viewer.getSelection()[0];
-        if (partId === value) {
-          id = partId;
-          break loop;
+        if (partId === pallet.id) {
+          if (pallet.crate !== undefined) {
+            return;
+          } else {
+            id = partId;
+            pallet.crate = crate;
+            break loop;
+          }
         }
       }
     }
+
     if (id !== undefined) {
       const sphereMesh = [];
       const inMass1 = [];
@@ -102,7 +132,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       const palletHeight = this.chosenData.pallet.height;
 
       const rotatedNodeId = id;
-      const rotatedBody = { nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null };
+      const rotatedBody = {nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null};
       rotatedBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(rotatedNodeId);
 
       rotatedBody.fragProxy = this.viewer.impl.getFragmentProxy(this.viewer.impl.model, rotatedBody.fragId);
@@ -121,7 +151,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       loader.load(
         '../../../assets/crate.gif', // src
         texture => { // onSuccess
-          const material = new THREE.MeshBasicMaterial({ map: texture });
+          const material = new THREE.MeshBasicMaterial({map: texture});
           sphereMesh[0] = new THREE.Mesh(geom, material);
           sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight, rotatedBody.position.z);
           this.viewer.impl.addOverlay('cScene', sphereMesh[0]);
