@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions} from 'ng2-adsk-forge-viewer';
-import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
-import {ChosenDataService} from '../../services/chosen-data.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
+import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
+import { ChosenDataService } from '../../services/chosen-data.service';
 
 declare const THREE: any;
 
@@ -62,13 +62,13 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   }
 
   documentChanged(event: DocumentChangedEvent) {
-    const {document} = event;
+    const { document } = event;
 
     if (!document.getRoot()) {
       return;
     }
 
-    const viewables = document.getRoot().search({type: 'geometry', role: '2d'});
+    const viewables = document.getRoot().search({ type: 'geometry', role: '2d' });
     if (viewables && viewables.length > 0) {
       event.viewerComponent.loadDocumentNode(document, viewables[0]).then();
     }
@@ -81,43 +81,46 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   }
 
   onDocumentMouseClick() {
-    const sphereMesh = [];
-    const inMass1 = [];
-    const inMass2 = [];
-    sphereMesh[1] = inMass1;
-    sphereMesh[2] = inMass2;
+    if (this.viewer.getSelection() != 6 && this.viewer.getSelection() != 4 && this.viewer.getSelection() != 8 && 
+    this.viewer.getSelection() != 10 && this.viewer.getSelection() != 16 && this.viewer.getSelection() != "") {
+      const sphereMesh = [];
+      const inMass1 = [];
+      const inMass2 = [];
+      sphereMesh[1] = inMass1;
+      sphereMesh[2] = inMass2;
 
-    const palletHeight = this.chosenData.pallet.height;
+      const palletHeight = this.chosenData.pallet.height;
 
-    const rotatedNodeId = this.viewer.getSelection()[0];
-    const rotatedBody = {nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null};
-    rotatedBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(rotatedNodeId);
+      const rotatedNodeId = this.viewer.getSelection()[0];
+      const rotatedBody = { nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null };
+      rotatedBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(rotatedNodeId);
 
-    rotatedBody.fragProxy = this.viewer.impl.getFragmentProxy(this.viewer.impl.model, rotatedBody.fragId);
-    rotatedBody.fragProxy.getAnimTransform();
+      rotatedBody.fragProxy = this.viewer.impl.getFragmentProxy(this.viewer.impl.model, rotatedBody.fragId);
+      rotatedBody.fragProxy.getAnimTransform();
 
-    rotatedBody.worldMatrix = new THREE.Matrix4();
-    rotatedBody.fragProxy.getWorldMatrix(rotatedBody.worldMatrix);
+      rotatedBody.worldMatrix = new THREE.Matrix4();
+      rotatedBody.fragProxy.getWorldMatrix(rotatedBody.worldMatrix);
 
-    // Центр выбранной детали
-    rotatedBody.position = new THREE.Vector3();
-    rotatedBody.position.copy(rotatedBody.worldMatrix.getPosition().clone());
+      // Центр выбранной детали
+      rotatedBody.position = new THREE.Vector3();
+      rotatedBody.position.copy(rotatedBody.worldMatrix.getPosition().clone());
 
-    const geom = new THREE.BoxGeometry(this.chosenData.crate.width, this.chosenData.crate.height, this.chosenData.crate.length);
+      const geom = new THREE.BoxGeometry(this.chosenData.crate.width, this.chosenData.crate.height, this.chosenData.crate.length);
 
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      '../../../assets/crate.gif', // src
-      texture => { // onSuccess
-        const material = new THREE.MeshBasicMaterial({map: texture});
-        sphereMesh[0] = new THREE.Mesh(geom, material);
-        sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight, rotatedBody.position.z);
-        this.viewer.impl.addOverlay('cScene', sphereMesh[0]);
+      const loader = new THREE.TextureLoader();
+      loader.load(
+        '../../../assets/crate.gif', // src
+        texture => { // onSuccess
+          const material = new THREE.MeshBasicMaterial({ map: texture });
+          sphereMesh[0] = new THREE.Mesh(geom, material);
+          sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight, rotatedBody.position.z);
+          this.viewer.impl.addOverlay('cScene', sphereMesh[0]);
 
-        this.viewer.overlays.impl.invalidate(true);
-      },
-      undefined, // onProcess (not supported anyway)
-      err => console.log(err) // onError
-    );
+          this.viewer.overlays.impl.invalidate(true);
+        },
+        undefined, // onProcess (not supported anyway)
+        err => console.log(err) // onError
+      );
+    }
   }
 }
