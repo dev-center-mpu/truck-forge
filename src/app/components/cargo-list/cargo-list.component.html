@@ -1,0 +1,13 @@
+<button class="btn btn-warning m-2" [routerLink]="'/'">Вернуться</button>
+
+<div class="list-group mx-2">
+  <button *ngFor="let crate of chosenData.cargo" class="list-group-item p-2" (click)="chosenData.selectCrate(crate)">
+    {{crate.length}}x{{crate.width}}x{{crate.height}} мм с весом {{crate.weight}} кг
+  </button>
+</div>
+
+<div class="list-group m-2">
+  <button class="list-group-item bg-info p-2" (click)="chosenData.unselectCrate()">
+    {{chosenData.crateDisplayData()}}
+  </button>
+</div>

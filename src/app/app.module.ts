@@ -7,8 +7,10 @@ import {InitialSetUpComponent} from './components/initial-set-up/initial-set-up.
 import {ChooseTruckComponent} from './components/choose-truck/choose-truck.component';
 import {ChoosePalletComponent} from './components/choose-pallet/choose-pallet.component';
 import {ChooseCargoComponent} from './components/choose-cargo/choose-cargo.component';
-import {CheckChosenItemsComponent} from './components/check-chosen-items/check-chosen-items.component';
 import {TruckSetUpComponent} from './components/truck-set-up/truck-set-up.component';
+import {ViewerModule} from 'ng2-adsk-forge-viewer';
+import {CheckChosenItemsComponent} from './components/check-chosen-items/check-chosen-items.component';
+import {CargoListComponent} from './components/cargo-list/cargo-list.component';
 
 @NgModule({
   declarations: [
@@ -18,12 +20,14 @@ import {TruckSetUpComponent} from './components/truck-set-up/truck-set-up.compon
     ChooseTruckComponent,
     ChoosePalletComponent,
     ChooseCargoComponent,
-    CheckChosenItemsComponent
+    CheckChosenItemsComponent,
+    CargoListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ViewerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -7,11 +7,11 @@
     <div *ngFor="let truck of trucks; let i = index" class="carousel-item {{i === 0 ? 'active' : ''}}">
       <div class="container">
         <div class="carousel-caption">
-          <p>Длина: {{techSpecValue(i, 'length')}} м</p>
-          <p>Ширина: {{techSpecValue(i, 'width')}} м</p>
-          <p>Высота: {{techSpecValue(i, 'height')}} м</p>
+          <p>Длина: {{truck.length}} мм</p>
+          <p>Ширина: {{truck.width}} мм</p>
+          <p>Высота: {{truck.height}} мм</p>
           <p>Грузоподъемность: {{truck.weight / 1000}} т</p>
-          <p>Вместимость паллет: {{techSpecValue(i, 'pallets')}} шт.</p>
+          <p>Вместимость паллет: {{truck.pallets}} шт.</p>
           <button class="btn btn-info" (click)="chosenData.truck = truck">Выбрать</button>
         </div>
       </div>

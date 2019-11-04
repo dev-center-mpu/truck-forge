@@ -2,25 +2,25 @@
   <form [formGroup]="form">
     <div class="form-group">
       <label>
-        Длина: <input type="text" class="form-control" formControlName="length" placeholder="1200">
+        Длина: <input type="text" class="form-control" formControlName="length" placeholder="мм">
       </label>
     </div>
     <div class="form-group">
       <label>
-        Ширина: <input type="text" class="form-control" formControlName="width" placeholder="800">
+        Ширина: <input type="text" class="form-control" formControlName="width" placeholder="мм">
       </label>
     </div>
     <div class="form-group">
       <label>
-        Высота: <input type="text" class="form-control" formControlName="height" placeholder="145">
+        Высота: <input type="text" class="form-control" formControlName="height" placeholder="мм">
       </label>
     </div>
     <div class="form-group">
       <label>
-        Вес: <input type="text" class="form-control" formControlName="weight" placeholder="80">
+        Вес: <input type="text" class="form-control" formControlName="weight" placeholder="кг">
       </label>
     </div>
-    <button (click)="chosenData.addCargo(this.form.value)" type="submit" class="btn btn-success" [disabled]="!form.valid">
+    <button (click)="chosenData.addCrate(this.form.value)" type="submit" class="btn btn-success" [disabled]="!form.valid">
       Добавить
     </button>
   </form>
