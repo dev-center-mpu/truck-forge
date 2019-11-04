@@ -7,6 +7,7 @@
       "width": 1000,
       "height": 1200,
       "pallets": 1,
+      "palletsID": [[85]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMS0yXzFfMS0ya3dwLnN0cA"
     },
     {
@@ -16,6 +17,7 @@
       "width": 1800,
       "height": 1800,
       "pallets": 4,
+      "palletsId": [[275, 271], [277, 273]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMi04XzEtOF8xLTguc3Rw"
     },
     {
@@ -25,6 +27,7 @@
       "width": 1950,
       "height": 2200,
       "pallets": 4,
+      "palletsId": [[275, 271], [277, 273]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMy0xXzEtOTVfMi0yLnN0cA"
     },
     {
@@ -34,6 +37,7 @@
       "width": 1900,
       "height": 2400,
       "pallets": 6,
+      "palletsId": [[258, 252], [260, 254], [262, 256]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvNF8xLTlfMi00LnN0cA"
     },
     {
@@ -43,6 +47,7 @@
       "width": 2200,
       "height": 2400,
       "pallets": 8,
+      "palletsId": [[273, 271], [277, 275], [281, 279], [285, 283]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvNV8yLTRfMi00Xy5zdHA"
     },
     {
@@ -52,6 +57,7 @@
       "width": 2450,
       "height": 2700,
       "pallets": 18,
+      "palletsId": [[300, 288, 276], [302, 290, 278], [304, 292, 280], [306, 294, 282], [308, 296, 284], [310, 298, 286]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvNy0yXzItNDVfMi03ay5zdHA"
     },
     {
@@ -61,6 +67,7 @@
       "width": 2450,
       "height": 2700,
       "pallets": 18,
+      "palletsId": [[299, 287, 275], [301, 289, 277], [303, 291, 279], [305, 293, 281], [307, 295, 283], [309, 297, 285]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvOF8yLTQ1XzItNy5zdHA"
     },
     {
@@ -70,6 +77,7 @@
       "width": 2450,
       "height": 2700,
       "pallets": 18,
+      "palletsId": [[299, 287, 275], [301, 289, 277], [303, 291, 279], [305, 293, 281], [307, 295, 283], [309, 297, 285]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvOF8yLTQ1XzItNy5zdHA"
     },
     {
@@ -79,6 +87,7 @@
       "width": 2460,
       "height": 2700,
       "pallets": 33,
+      "palletsId": [[319, 297, 275], [321, 299, 277], [323, 301, 279], [325, 303, 281], [327, 305, 283], [329, 307, 285], [331, 309, 287], [333, 311, 289], [335, 313, 291], [337, 315, 293], [339, 317, 295]],
       "urn": "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMTMtNl8yLTQ2XzItNy5zdHA"
     }
   ],

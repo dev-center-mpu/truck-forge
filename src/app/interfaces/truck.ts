@@ -5,5 +5,6 @@ export default interface Truck {
   height: number;
   weight: number;
   pallets: number;
+  palletsId: [[number]];
   urn: string;
 }
