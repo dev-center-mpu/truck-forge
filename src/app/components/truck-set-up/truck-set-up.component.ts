@@ -49,8 +49,8 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       onViewerInitialized: (args: ViewerInitializedEvent) => {
         args.viewerComponent.DocumentId = documentUrn;
         this.viewer = args.viewer;
-        this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, this.onDocumentMouseClick.bind(this));
-        this.addCustomGeom(args.viewer);
+        this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, this.addCrateOnScene.bind(this));
+        this.initViewer(args.viewer);
       },
     };
   }
@@ -74,15 +74,25 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  addCustomGeom(viewer) {
+  initViewer(viewer) {
     viewer.overlays.impl.invalidate(true);
     this.viewer = viewer;
     this.viewer.impl.createOverlayScene('cScene');
   }
 
-  onDocumentMouseClick() {
-    if (this.viewer.getSelection() != 6 && this.viewer.getSelection() != 4 && this.viewer.getSelection() != 8 && 
-    this.viewer.getSelection() != 10 && this.viewer.getSelection() != 16 && this.viewer.getSelection() != "") {
+  addCrateOnScene() {
+    let id: number;
+    const palletsId = this.chosenData.truck.palletsId;
+    loop: for (const array of palletsId) {
+      for (const value of array) {
+        const partId = this.viewer.getSelection()[0];
+        if (partId === value) {
+          id = partId;
+          break loop;
+        }
+      }
+    }
+    if (id !== undefined) {
       const sphereMesh = [];
       const inMass1 = [];
       const inMass2 = [];
@@ -91,7 +101,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
 
       const palletHeight = this.chosenData.pallet.height;
 
-      const rotatedNodeId = this.viewer.getSelection()[0];
+      const rotatedNodeId = id;
       const rotatedBody = { nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null };
       rotatedBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(rotatedNodeId);
 
