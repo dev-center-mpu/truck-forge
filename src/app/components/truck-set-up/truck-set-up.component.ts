@@ -23,6 +23,11 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   viewerOptions3d: ViewerOptions;
   thumbnailOptions: ThumbnailOptions;
 
+  raycaster;
+  mouse;
+  INTERSECTED;
+  intersects;
+
   pallets: Array<ViewerPallet[]>;
 
   constructor(
@@ -59,6 +64,8 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
         args.viewerComponent.DocumentId = documentUrn;
         this.viewer = args.viewer;
         this.viewer.addEventListener(Autodesk.Viewing.SELECTION_CHANGED_EVENT, this.addCrateOnScene.bind(this));
+        document.querySelector('#forge').addEventListener('mousemove', this.onDocumentMouseMove.bind(this), false);
+        document.querySelector('#forge').addEventListener('click', this.onCargoClick.bind(this), false);
         this.initViewer(args.viewer);
       },
     };
@@ -162,5 +169,43 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
         err => console.log(err) // onError
       );
     }
+  }
+
+  onDocumentMouseMove(event) {
+    this.mouse = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1);
+    const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
+    vector.unproject(this.viewer.impl.camera);
+
+    this.raycaster = new THREE.Raycaster(this.viewer.impl.camera.position, vector.sub(this.viewer.impl.camera.position).normalize());
+
+    this.intersects = this.raycaster.intersectObjects(this.viewer.impl.overlayScenes.cScene.scene.children);
+    if (this.intersects.length > 0) {
+      // if the closest object intersected is not the currently stored intersection object
+      if (this.intersects[0].object !== this.INTERSECTED) {
+        // restore previous intersection object (if it exists) to its original color
+        if (this.INTERSECTED) {
+          this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
+        }
+        // store reference to closest object as current intersection object
+        this.INTERSECTED = this.intersects[0].object;
+        // store color of closest object (for later restoration)
+        this.INTERSECTED.currentHex = this.INTERSECTED.material.color.getHex();
+        // set a new color for closest object
+        this.INTERSECTED.material.color.setHex(0x080708);
+      }
+    } else {
+      // restore previous intersection object (if it exists) to its original color
+      if (this.INTERSECTED) {
+        this.INTERSECTED.material.color.setHex(this.INTERSECTED.currentHex);
+      }
+      // remove previous intersection object reference
+      //     by setting current intersection object to "nothing"
+      this.INTERSECTED = null;
+    }
+  }
+
+  onCargoClick(event){
+    this.viewer.overlays.impl.removeOverlay('cScene', this.intersects[0].object);
+    console.log(this.intersects[0]);
   }
 }

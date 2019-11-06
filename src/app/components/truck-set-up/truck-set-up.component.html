@@ -1,4 +1,5 @@
 <div id="forge">
-  <adsk-forge-viewer [viewerOptions]="viewerOptions3d" (onDocumentChanged)="documentChanged($event)"></adsk-forge-viewer>
+  <adsk-forge-viewer [viewerOptions]="viewerOptions3d" (onDocumentChanged)="documentChanged($event)" 
+    (onDocumentMouseMove)="onDocumentMouseMove($event)" (onclick)="onCargoClick($event)"></adsk-forge-viewer>
 </div>
 <app-cargo-list></app-cargo-list>
