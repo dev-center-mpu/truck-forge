@@ -1,8 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions} from 'ng2-adsk-forge-viewer';
-import {ServerForgeConnectionService} from '../../services/server-forge-connection.service';
-import {ChosenDataService} from '../../services/chosen-data.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
+import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
+import { ChosenDataService } from '../../services/chosen-data.service';
 import Cargo from '../../interfaces/cargo';
+import { ThrowStmt } from '@angular/compiler';
 
 declare const THREE: any;
 
@@ -27,7 +28,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   mouse;
   INTERSECTED;
   intersects;
-
+  
   pallets: Array<ViewerPallet[]>;
 
   constructor(
@@ -79,13 +80,13 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   }
 
   documentChanged(event: DocumentChangedEvent) {
-    const {document} = event;
+    const { document } = event;
 
     if (!document.getRoot()) {
       return;
     }
 
-    const viewables = document.getRoot().search({type: 'geometry', role: '2d'});
+    const viewables = document.getRoot().search({ type: 'geometry', role: '2d' });
     if (viewables && viewables.length > 0) {
       event.viewerComponent.loadDocumentNode(document, viewables[0]).then();
     }
@@ -100,7 +101,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     for (const array of this.chosenData.truck.palletsId) {
       const palletsLine = [];
       for (const value of array) {
-        palletsLine.push({id: value, crate: undefined});
+        palletsLine.push({ id: value, crate: undefined });
       }
       pallets.push(palletsLine);
     }
@@ -119,7 +120,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
         const partId = this.viewer.getSelection()[0];
         if (partId === pallet.id) {
           if (pallet.crate !== undefined) {
-            return;
+            pallet.crate = undefined;
           } else {
             id = partId;
             pallet.crate = crate;
@@ -139,7 +140,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       const palletHeight = this.chosenData.pallet.height;
 
       const rotatedNodeId = id;
-      const rotatedBody = {nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null};
+      const rotatedBody = { nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null };
       rotatedBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(rotatedNodeId);
 
       rotatedBody.fragProxy = this.viewer.impl.getFragmentProxy(this.viewer.impl.model, rotatedBody.fragId);
@@ -158,12 +159,12 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       loader.load(
         '../../../assets/crate.gif', // src
         texture => { // onSuccess
-          const material = new THREE.MeshBasicMaterial({map: texture});
+          const material = new THREE.MeshBasicMaterial({ map: texture });
           sphereMesh[0] = new THREE.Mesh(geom, material);
           sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight, rotatedBody.position.z);
           this.viewer.impl.addOverlay('cScene', sphereMesh[0]);
 
-          this.viewer.overlays.impl.invalidate(true);
+          this.viewer.impl.invalidate(true);
         },
         undefined, // onProcess (not supported anyway)
         err => console.log(err) // onError
@@ -204,8 +205,10 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCargoClick(event){
-    this.viewer.overlays.impl.removeOverlay('cScene', this.intersects[0].object);
-    console.log(this.intersects[0]);
+  onCargoClick(event) {
+    if (this.intersects[0] != undefined) {
+      // console.log(this.viewer.impl.overlayScenes.cScene.scene.children);
+      this.viewer.impl.removeOverlay('cScene', this.intersects[0].object);
+    }
   }
 }
