@@ -139,6 +139,8 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
 
       const palletHeight = this.chosenData.pallet.height;
 
+      const crateHeight = this.chosenData.crate.height;
+
       const rotatedNodeId = id;
       const rotatedBody = { nodeId: rotatedNodeId, fragId: null, fragProxy: null, worldMatrix: null, position: null };
       rotatedBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(rotatedNodeId);
@@ -161,7 +163,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
         texture => { // onSuccess
           const material = new THREE.MeshBasicMaterial({ map: texture });
           sphereMesh[0] = new THREE.Mesh(geom, material);
-          sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight, rotatedBody.position.z);
+          sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight / 2 + crateHeight / 2, rotatedBody.position.z);
           this.viewer.impl.addOverlay('cScene', sphereMesh[0]);
 
           this.viewer.impl.invalidate(true);
