@@ -13,9 +13,13 @@ export class ChooseTruckComponent {
   readonly trucks: Truck[];
 
   constructor(
-    private database: DatabaseService,
-    private chosenData: ChosenDataService
+    public database: DatabaseService,
+    public chosenData: ChosenDataService
   ) {
     this.trucks = this.database.trucks;
+  }
+  onChoseTruck(truck){
+    this.chosenData.truck = truck;
+    
   }
 }

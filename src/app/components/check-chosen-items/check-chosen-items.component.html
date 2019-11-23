@@ -1,14 +1,19 @@
-<div class="container">
+<div class="container-fluid badge badge-light ml-2">
+  <div class="container">
+    <div class="form-row ml-1 mr-1">
+      <div class="badge badge-light text-wrap m-1 ml-2" style="width:32%;">
   <p *ngIf="chosenData.truck === undefined; else elseTruck">Грузовик не выбран.</p>
   <ng-template #elseTruck>
     <p>Выбранный грузовик: {{chosenData.truck.weight}} кг, {{chosenData.truck.pallets}} паллет(а/ов)</p>
   </ng-template>
-
-  <p *ngIf="chosenData.pallet === undefined; else elsePallet">Паллет не выбран.</p>
+      </div>
+      <div class="badge badge-light text-wrap m-1 ml-2" style="width:32%;">
+   <p *ngIf="chosenData.pallet === undefined; else elsePallet">Паллет не выбран.</p>
   <ng-template #elsePallet>
     <p>Выбранный паллет: {{chosenData.pallet.weight}} кг</p>
   </ng-template>
-
+</div>
+<div class="badge badge-light text-wrap m-1 ml-2" style="width:32%;">
   <p *ngIf="!chosenData.cargoIsChosen()">Груз не выбран.</p>
   <p *ngFor="let crate of chosenData.cargo; let i = index">
     <button type="button" class="close" aria-label="Close" [hidden]="canBeDeleted()" (click)="chosenData.deleteCargo(i)">
@@ -16,9 +21,10 @@
     </button>
     {{crate.length}}x{{crate.width}}x{{crate.height}} мм с весом {{crate.weight}} кг
   </p>
-
+</div>
+</div>
   <a [routerLink]="'/viewer'">
-    <button class="btn btn-warning" [disabled]="!settingsAreDone()">Распределить груз</button>
+    <button class="btn btn-warning btn-block text-white font-weight-bold" [disabled]="!settingsAreDone()">Распределить груз</button>
   </a>
-  <button style="margin-left: 10px;" class="btn btn-danger" (click) = "letDelete()" [disabled]="!settingsAreDone()">Удаление груза</button>
+  <button class="btn btn-danger btn-block mt-2" (click) = "letDelete()" [disabled]="!settingsAreDone()">Удаление груза</button>
 </div>

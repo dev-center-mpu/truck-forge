@@ -13,8 +13,8 @@ export class CheckChosenItemsComponent {
   id: number;
 
   constructor(
-    private activatedRouter: ActivatedRoute,
-    private chosenData: ChosenDataService) {
+    public activatedRouter: ActivatedRoute,
+    public chosenData: ChosenDataService) {
     this.activatedRouter.params.subscribe(param => {
       this.id = param.id;
       console.log(param.model);
