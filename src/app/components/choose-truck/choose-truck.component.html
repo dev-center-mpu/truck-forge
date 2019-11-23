@@ -12,7 +12,7 @@
         </nav>
         <div class="scrollbar scrollbar-primary">
           <div data-spy="scroll"  data-target="#navbar-example2" data-offset="0" *ngFor="let truck of trucks; let i = index" class="truckcenter">
-            <div class="hoverdiv">  
+            <div class="alert alert-info container" (click)="onChoseTruck(truck)">
               <h4 id="{{truck.id}}">Грузовик №{{truck.id}}</h4>
               <p>Длина: {{truck.length}} мм</p>
               <p>Ширина: {{truck.width}} мм</p>
@@ -22,6 +22,6 @@
             </div>
 
           </div>
-          <button class="btn btn-info btn-padding" (click)="chosenData.truck = truck">Выбрать</button>
+          <!-- <button class="btn btn-info btn-padding" (click)="chosenData.truck = truck">Выбрать</button> -->
         </div>
 </div>
