@@ -1,4 +1,7 @@
 <button class="btn btn-warning m-2" [routerLink]="'/'">Вернуться</button>
+<button class="btn btn-dark m-2" data-toggle="modal" data-target="#modal" (click)="massCalculation()">
+  Расчет
+</button>
 
 <div class="list-group mx-2">
   <button *ngFor="let crate of chosenData.cargo" class="list-group-item p-2" (click)="chosenData.selectCrate(crate)">

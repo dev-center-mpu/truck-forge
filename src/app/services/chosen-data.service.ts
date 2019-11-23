@@ -17,21 +17,60 @@ export class ChosenDataService {
 
   constructor() {
     this.cargo = [];
+  }
 
-    // TODO: Delete above lines.
-    this.truck = {
-      id: 1,
-      weight: 1000,
-      length: 2800,
-      width: 1800,
-      height: 1800,
-      pallets: 4,
-      palletsId: [[275, 271], [277, 273]],
-      urn: 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMi04XzEtOF8xLTguc3Rw',
-      leftWallId: 6
-    };
-    this.pallet = { length: 1200, width: 800, height: 145, weight: 5 };
-    this.cargo = [{ weight: 300, length: 1200, width: 800, height: 145 }, { weight: 300, length: 1000, width: 500, height: 1000 }];
+  massCenterCalculation(): {x: number, y: number, z: number} {
+    let i: number;
+
+    // Mass center by X
+    let massCenterXTemp = 0;
+    let massX = 0;
+    i = 0;
+    for (const palletsLine of this.pallets) {
+      i += 1;
+      for (const pallet of palletsLine) {
+        const crate = pallet.crate;
+        if (crate !== undefined) {
+          const offset = +this.pallet.length * +i - +this.pallet.length / 2;
+          massCenterXTemp += +offset * +crate.weight;
+          massX += +crate.weight;
+        }
+      }
+    }
+    const massCenterX = (this.truck.length / 2) - (massCenterXTemp / massX);
+
+    // Mass center by Y
+    let massCenterYTemp = 0;
+    let massY = 0;
+    for (const palletsLine of this.pallets) {
+      i = 0;
+      for (const pallet of palletsLine) {
+        i += 1;
+        const crate = pallet.crate;
+        if (crate !== undefined) {
+          const offset = +this.pallet.width * +i - +this.pallet.width / 2;
+          massCenterYTemp += +offset * +crate.weight;
+          massY += +crate.weight;
+        }
+      }
+    }
+    const massCenterY = (this.truck.width / 2) - massCenterYTemp / massY;
+
+    // Mass center by Z
+    let massCenterZTemp = 0;
+    let massZ = 0;
+    for (const palletsLine of this.pallets) {
+      for (const pallet of palletsLine) {
+        const crate = pallet.crate;
+        if (crate !== undefined) {
+          massCenterZTemp += +crate.weight * +crate.height / 2;
+          massZ += +crate.weight;
+        }
+      }
+    }
+    const massCenterZ = massCenterZTemp / massZ;
+
+    return {x: massCenterX, y: massCenterY, z: massCenterZ};
   }
 
   truckIsChosen(): boolean {

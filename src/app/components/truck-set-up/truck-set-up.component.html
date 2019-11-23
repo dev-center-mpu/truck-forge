@@ -1,5 +1,5 @@
 <div id="forge">
-  <adsk-forge-viewer [viewerOptions]="viewerOptions3d" (onDocumentChanged)="documentChanged($event)" 
-    (onDocumentMouseMove)="onDocumentMouseMove($event)" (onclick)="onCargoClick($event)"></adsk-forge-viewer>
+  <adsk-forge-viewer [viewerOptions]="viewerOptions3d" (onDocumentChanged)="documentChanged($event)"
+    (mousemove)="onDocumentMouseMove($event)" (click)="onCargoClick()"></adsk-forge-viewer>
 </div>
-<app-cargo-list></app-cargo-list>
+<app-cargo-list (calculate)="addMassCenter($event)"></app-cargo-list>
