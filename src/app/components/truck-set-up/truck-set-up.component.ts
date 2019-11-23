@@ -107,7 +107,8 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     this.viewer.impl.onLoadComplete = () => viewer.toolbar.container.hidden = true;
   }
 
-  addCrateOnScene() {
+  addCrateOnScene(event) {
+    console.log(this.viewer.getSelection()[0]);
     const crate = this.chosenData.crate;
     if (crate === undefined) {
       return;
@@ -163,6 +164,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
         '../../../assets/crate.gif', // src
         texture => { // onSuccess
           const material = new THREE.MeshBasicMaterial({ map: texture });
+          material.opacity = 0.5;
           sphereMesh[0] = new THREE.Mesh(geom, material);
           sphereMesh[0].position.set(
             rotatedBody.position.x,
@@ -229,5 +231,34 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       this.chosenData.addCrate(crate.userData, true);
       this.viewer.impl.removeOverlay('cScene', crateMesh);
     }
+  }
+
+  placeMassCenter(errorCenterX: number = 0, errorCenterY: number = 0, errorCenterZ: number = 0) {
+    const id = this.chosenData.truck.leftWallId;
+    const centerBody = { nodeId: id, fragId: null, fragProxy: null, worldMatrix: null, position: null };
+    centerBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(centerBody.nodeId);
+
+    centerBody.fragProxy = this.viewer.impl.getFragmentProxy(this.viewer.impl.model, centerBody.fragId);
+    centerBody.fragProxy.getAnimTransform();
+
+    centerBody.worldMatrix = new THREE.Matrix4();
+    centerBody.fragProxy.getWorldMatrix(centerBody.worldMatrix);
+
+    // Центр выбранной детали
+    centerBody.position = new THREE.Vector3();
+    centerBody.position.copy(centerBody.worldMatrix.getPosition().clone());
+
+    const geom = new THREE.SphereGeometry(100, 32, 32);
+    const loader = new THREE.TextureLoader();
+    var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    const sphere = new THREE.Mesh(geom, material);
+    sphere.position.set(0 - errorCenterX, centerBody.position.y - errorCenterY, 
+      centerBody.position.z - errorCenterZ);
+
+    this.viewer.impl.addOverlay('cScene', sphere);
+
+    console.log(this.viewer.impl.overlayScenes);
+
+    this.viewer.impl.invalidate(true);
   }
 }
