@@ -2,15 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
 import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
 import { ChosenDataService } from '../../services/chosen-data.service';
-import Cargo from '../../interfaces/cargo';
-import { ThrowStmt } from '@angular/compiler';
 
 declare const THREE: any;
-
-interface ViewerPallet {
-  id: number;
-  crate: Cargo;
-}
 
 @Component({
   selector: 'app-truck-set-up',
@@ -28,14 +21,15 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   mouse;
   INTERSECTED;
   intersects;
-  
-  pallets: Array<ViewerPallet[]>;
 
   constructor(
     private serverForgeConnection: ServerForgeConnectionService,
     private chosenData: ChosenDataService
   ) {
-    this.pallets = [];
+    this.chosenData.pallets = [];
+    this.chosenData.cargo.map((crate, index) => {
+      crate.id = index;
+    });
   }
 
   async ngOnInit() {
@@ -76,7 +70,10 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     this.viewer = undefined;
     this.viewerOptions3d = undefined;
     this.thumbnailOptions = undefined;
-    this.pallets = undefined;
+    this.chosenData.pallets = undefined;
+    this.chosenData.cargo.map(crate => {
+      crate.id = undefined;
+    });
   }
 
   documentChanged(event: DocumentChangedEvent) {
@@ -105,17 +102,20 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       }
       pallets.push(palletsLine);
     }
-    this.pallets = pallets;
+    this.chosenData.pallets = pallets;
+
+    this.viewer.impl.onLoadComplete = () => viewer.toolbar.container.hidden = true;
   }
 
-  addCrateOnScene() {
+  addCrateOnScene(event) {
+    console.log(this.viewer.getSelection()[0]);
     const crate = this.chosenData.crate;
     if (crate === undefined) {
       return;
     }
 
     let id: number;
-    loop: for (const palletsLine of this.pallets) {
+    loop: for (const palletsLine of this.chosenData.pallets) {
       for (const pallet of palletsLine) {
         const partId = this.viewer.getSelection()[0];
         if (partId === pallet.id) {
@@ -156,16 +156,22 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       rotatedBody.position.copy(rotatedBody.worldMatrix.getPosition().clone());
 
       const geom = new THREE.BoxGeometry(this.chosenData.crate.width, this.chosenData.crate.height, this.chosenData.crate.length);
+      geom.userData = crate;
+      this.chosenData.crate = undefined;
 
       const loader = new THREE.TextureLoader();
       loader.load(
         '../../../assets/crate.gif', // src
         texture => { // onSuccess
           const material = new THREE.MeshBasicMaterial({ map: texture });
+          material.opacity = 0.5;
           sphereMesh[0] = new THREE.Mesh(geom, material);
-          sphereMesh[0].position.set(rotatedBody.position.x, rotatedBody.position.y + palletHeight / 2 + crateHeight / 2, rotatedBody.position.z);
+          sphereMesh[0].position.set(
+            rotatedBody.position.x,
+            rotatedBody.position.y + palletHeight / 2 + crateHeight / 2,
+            rotatedBody.position.z
+          );
           this.viewer.impl.addOverlay('cScene', sphereMesh[0]);
-
           this.viewer.impl.invalidate(true);
         },
         undefined, // onProcess (not supported anyway)
@@ -207,10 +213,52 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCargoClick(event) {
-    if (this.intersects[0] != undefined) {
-      // console.log(this.viewer.impl.overlayScenes.cScene.scene.children);
-      this.viewer.impl.removeOverlay('cScene', this.intersects[0].object);
+  onCargoClick() {
+    if (this.intersects[0] !== undefined) {
+      const crateMesh = this.intersects[0].object;
+      const crate = crateMesh.geometry;
+
+      const crateId = crate.userData.id;
+      loop: for (const palletsLine of this.chosenData.pallets) {
+        for (const pallet of palletsLine) {
+          if (pallet.crate !== undefined && crateId === pallet.crate.id) {
+            pallet.crate = undefined;
+            break loop;
+          }
+        }
+      }
+
+      this.chosenData.addCrate(crate.userData, true);
+      this.viewer.impl.removeOverlay('cScene', crateMesh);
     }
+  }
+
+  placeMassCenter(errorCenterX: number = 0, errorCenterY: number = 0, errorCenterZ: number = 0) {
+    const id = this.chosenData.truck.leftWallId;
+    const centerBody = { nodeId: id, fragId: null, fragProxy: null, worldMatrix: null, position: null };
+    centerBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(centerBody.nodeId);
+
+    centerBody.fragProxy = this.viewer.impl.getFragmentProxy(this.viewer.impl.model, centerBody.fragId);
+    centerBody.fragProxy.getAnimTransform();
+
+    centerBody.worldMatrix = new THREE.Matrix4();
+    centerBody.fragProxy.getWorldMatrix(centerBody.worldMatrix);
+
+    // Центр выбранной детали
+    centerBody.position = new THREE.Vector3();
+    centerBody.position.copy(centerBody.worldMatrix.getPosition().clone());
+
+    const geom = new THREE.SphereGeometry(100, 32, 32);
+    const loader = new THREE.TextureLoader();
+    var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    const sphere = new THREE.Mesh(geom, material);
+    sphere.position.set(0 - errorCenterX, centerBody.position.y - errorCenterY, 
+      centerBody.position.z - errorCenterZ);
+
+    this.viewer.impl.addOverlay('cScene', sphere);
+
+    console.log(this.viewer.impl.overlayScenes);
+
+    this.viewer.impl.invalidate(true);
   }
 }

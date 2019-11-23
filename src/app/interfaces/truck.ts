@@ -7,4 +7,5 @@ export default interface Truck {
   pallets: number;
   palletsId: Array<number[]>;
   urn: string;
+  leftWallId: number;
 }

@@ -1,7 +1,8 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import Truck from '../interfaces/truck';
 import Pallet from '../interfaces/pallet';
 import Cargo from '../interfaces/cargo';
+import ViewerPallet from '../interfaces/viewer-pallet';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class ChosenDataService {
   pallet: Pallet;
   cargo: Cargo[];
   crate: Cargo;
+  pallets: Array<ViewerPallet[]>;
 
   constructor() {
     this.cargo = [];
@@ -25,15 +27,19 @@ export class ChosenDataService {
       height: 1800,
       pallets: 4,
       palletsId: [[275, 271], [277, 273]],
-      urn: 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMi04XzEtOF8xLTguc3Rw'
-
+      urn: 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMi04XzEtOF8xLTguc3Rw',
+      leftWallId: 6
     };
-    this.pallet = {length: 1200, width: 800, height: 145, weight: 5};
-    this.cargo = [{weight: 700, length: 1200, width: 800, height: 145}, {weight: 700, length: 1000, width: 500, height: 1000}];
+    this.pallet = { length: 1200, width: 800, height: 145, weight: 5 };
+    this.cargo = [{ weight: 300, length: 1200, width: 800, height: 145 }, { weight: 300, length: 1000, width: 500, height: 1000 }];
   }
 
   truckIsChosen(): boolean {
     return this.truck !== undefined;
+  }
+
+  deleteCargo(id: number) {
+    this.cargo.splice(id, 1);
   }
 
   palletIsChosen(): boolean {
@@ -44,7 +50,17 @@ export class ChosenDataService {
     return this.cargo.length !== 0;
   }
 
-  addCrate(crate: Cargo) {
+  addCrate(crate: Cargo, forceAdd: boolean = false) {
+    if (forceAdd) {
+      for (const obj of this.cargo) {
+        if (obj.id === crate.id) {
+          return;
+        }
+      }
+      this.cargo.push(crate);
+      return;
+    }
+
     if (!this.truckIsChosen()) {
       alert('Вы не выбрали грузовик.');
       return;
