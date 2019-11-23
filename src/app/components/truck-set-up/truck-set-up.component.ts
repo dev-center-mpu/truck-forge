@@ -111,7 +111,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
     this.chosenData.pallets = pallets;
 
-    // this.viewer.impl.onLoadComplete = () => viewer.toolbar.container.hidden = true;
+    this.viewer.impl.onLoadComplete = () => viewer.toolbar.container.hidden = true;
   }
 
   addCrateOnScene() {
