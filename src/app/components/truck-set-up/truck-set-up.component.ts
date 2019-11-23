@@ -89,12 +89,10 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  initViewer(viewer) {  
+  initViewer(viewer) {
     viewer.overlays.impl.invalidate(true);
     this.viewer = viewer;
     this.viewer.impl.createOverlayScene('cScene');
-
-    
 
     const pallets = [];
     for (const array of this.chosenData.truck.palletsId) {
@@ -105,10 +103,8 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       pallets.push(palletsLine);
     }
     this.chosenData.pallets = pallets;
-    
-    this.viewer.impl.onLoadComplete = function(smth){
-      viewer.toolbar.container.hidden = true;
-    }
+
+    this.viewer.impl.onLoadComplete = () => viewer.toolbar.container.hidden = true;
   }
 
   addCrateOnScene() {
@@ -161,7 +157,6 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       const geom = new THREE.BoxGeometry(this.chosenData.crate.width, this.chosenData.crate.height, this.chosenData.crate.length);
       geom.userData = crate;
       this.chosenData.crate = undefined;
-      console.log(this.chosenData.pallets);
 
       const loader = new THREE.TextureLoader();
       loader.load(
@@ -224,7 +219,7 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       const crateId = crate.userData.id;
       loop: for (const palletsLine of this.chosenData.pallets) {
         for (const pallet of palletsLine) {
-          if (crateId === pallet.crate.id) {
+          if (pallet.crate !== undefined && crateId === pallet.crate.id) {
             pallet.crate = undefined;
             break loop;
           }
