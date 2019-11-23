@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import Truck from '../interfaces/truck';
 import Pallet from '../interfaces/pallet';
 import Cargo from '../interfaces/cargo';
@@ -30,12 +30,16 @@ export class ChosenDataService {
       urn: 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dHJ1Y2tfZm9yZ2UvMi04XzEtOF8xLTguc3Rw',
       leftWallId: 6
     };
-    this.pallet = {length: 1200, width: 800, height: 145, weight: 5};
-    this.cargo = [{weight: 700, length: 1200, width: 800, height: 145}, {weight: 300, length: 1000, width: 500, height: 1000}];
+    this.pallet = { length: 1200, width: 800, height: 145, weight: 5 };
+    this.cargo = [{ weight: 300, length: 1200, width: 800, height: 145 }, { weight: 300, length: 1000, width: 500, height: 1000 }];
   }
 
   truckIsChosen(): boolean {
     return this.truck !== undefined;
+  }
+
+  deleteCargo(id: number) {
+    this.cargo.splice(id, 1);
   }
 
   palletIsChosen(): boolean {

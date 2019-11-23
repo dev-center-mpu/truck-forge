@@ -10,11 +10,15 @@
   </ng-template>
 
   <p *ngIf="!chosenData.cargoIsChosen()">Груз не выбран.</p>
-  <p *ngFor="let crate of chosenData.cargo">
+  <p *ngFor="let crate of chosenData.cargo; let i = index">
+    <button type="button" class="close" aria-label="Close" [hidden]="canBeDeleted()" (click)="chosenData.deleteCargo(i)">
+      <span aria-hidden="true">&times;</span>
+    </button>
     {{crate.length}}x{{crate.width}}x{{crate.height}} мм с весом {{crate.weight}} кг
   </p>
 
   <a [routerLink]="'/viewer'">
     <button class="btn btn-warning" [disabled]="!settingsAreDone()">Распределить груз</button>
   </a>
+  <button style="margin-left: 10px;" class="btn btn-danger" (click) = "letDelete()" [disabled]="!settingsAreDone()">Удаление груза</button>
 </div>
