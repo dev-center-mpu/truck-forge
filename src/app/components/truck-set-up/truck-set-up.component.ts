@@ -4,6 +4,8 @@ import { ServerForgeConnectionService } from '../../services/server-forge-connec
 import { ChosenDataService } from '../../services/chosen-data.service';
 import Cargo from '../../interfaces/cargo';
 import { ThrowStmt } from '@angular/compiler';
+import { combineLatest } from 'rxjs';
+import { isNullOrUndefined } from 'util';
 
 declare const THREE: any;
 
@@ -92,10 +94,12 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  initViewer(viewer) {
+  initViewer(viewer) {  
     viewer.overlays.impl.invalidate(true);
     this.viewer = viewer;
     this.viewer.impl.createOverlayScene('cScene');
+
+    
 
     const pallets = [];
     for (const array of this.chosenData.truck.palletsId) {
@@ -106,6 +110,10 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       pallets.push(palletsLine);
     }
     this.pallets = pallets;
+
+    this.viewer.impl.onLoadComplete = function(smth){
+      viewer.toolbar.container.hidden = true;
+    }
   }
 
   addCrateOnScene() {
