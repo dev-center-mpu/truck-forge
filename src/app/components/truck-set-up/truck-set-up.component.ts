@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
 import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
 import { ChosenDataService } from '../../services/chosen-data.service';
@@ -70,6 +70,13 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     this.viewer = undefined;
     this.viewerOptions3d = undefined;
     this.thumbnailOptions = undefined;
+    for (const palletsLine of this.chosenData.pallets) {
+      for (const pallet of palletsLine) {
+        if (pallet.crate !== undefined) {
+          this.chosenData.addCrate(pallet.crate, true);
+        }
+      }
+    }
     this.chosenData.pallets = undefined;
     this.chosenData.cargo.map(crate => {
       crate.id = undefined;
@@ -104,11 +111,10 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
     this.chosenData.pallets = pallets;
 
-    this.viewer.impl.onLoadComplete = () => viewer.toolbar.container.hidden = true;
+    // this.viewer.impl.onLoadComplete = () => viewer.toolbar.container.hidden = true;
   }
 
-  addCrateOnScene(event) {
-    console.log(this.viewer.getSelection()[0]);
+  addCrateOnScene() {
     const crate = this.chosenData.crate;
     if (crate === undefined) {
       return;
@@ -233,7 +239,11 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  placeMassCenter(errorCenterX: number = 0, errorCenterY: number = 0, errorCenterZ: number = 0) {
+  addMassCenter(obj) {
+    const errorCenterX = -obj.x;
+    const errorCenterY = -obj.y;
+    const errorCenterZ = -obj.z;
+    console.log(obj);
     const id = this.chosenData.truck.leftWallId;
     const centerBody = { nodeId: id, fragId: null, fragProxy: null, worldMatrix: null, position: null };
     centerBody.fragId = this.viewer.impl.model.getData().fragments.fragId2dbId.indexOf(centerBody.nodeId);
@@ -249,11 +259,13 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     centerBody.position.copy(centerBody.worldMatrix.getPosition().clone());
 
     const geom = new THREE.SphereGeometry(100, 32, 32);
-    const loader = new THREE.TextureLoader();
-    var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
     const sphere = new THREE.Mesh(geom, material);
-    sphere.position.set(0 - errorCenterX, centerBody.position.y - errorCenterY, 
-      centerBody.position.z - errorCenterZ);
+    sphere.position.set(
+      0 - errorCenterX,
+      centerBody.position.z - errorCenterZ,
+      centerBody.position.y - errorCenterY
+    );
 
     this.viewer.impl.addOverlay('cScene', sphere);
 
