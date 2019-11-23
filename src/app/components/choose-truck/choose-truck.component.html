@@ -1,33 +1,27 @@
-<div id="truckCarousel" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li *ngFor="let truck of trucks; let i = index" class="{{i === 0 ? 'active' : ''}}" data-target="#truckCarousel"
-        [attr.data-slide-to]=[i]></li>
-  </ol>
-  <div class="carousel-inner">
-    <div *ngFor="let truck of trucks; let i = index" class="carousel-item {{i === 0 ? 'active' : ''}}">
-      <div class="container">
-        <div class="carousel-caption">
-          <p>Длина: {{truck.length}} мм</p>
-          <p>Ширина: {{truck.width}} мм</p>
-          <p>Высота: {{truck.height}} мм</p>
-          <p>Грузоподъемность: {{truck.weight / 1000}} т</p>
-          <p>Вместимость паллет: {{truck.pallets}} шт.</p>
-          <button class="btn btn-info" (click)="chosenData.truck = truck">Выбрать</button>
+<div id="truckCarousel" class="" data-ride="carousel" >
+      <nav id="navbar-example2" class="navbar navbar-light">
+          <a class="navbar-brand" href="#">Выбор грузовика по габаритам</a>
+          <ul class="nav nav-pills">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle"  data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Поиск по тоннам</a>
+              <div class="dropdown-menu" >
+                <a class="dropdown-item" *ngFor="let truck of trucks; let i = index" href="#{{truck.id}}">{{truck.weight / 1000}} т</a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <div class="scrollbar scrollbar-primary">
+          <div data-spy="scroll"  data-target="#navbar-example2" data-offset="0" *ngFor="let truck of trucks; let i = index" class="truckcenter">
+            <div class="hoverdiv">  
+              <h4 id="{{truck.id}}">Грузовик №{{truck.id}}</h4>
+              <p>Длина: {{truck.length}} мм</p>
+              <p>Ширина: {{truck.width}} мм</p>
+              <p>Высота: {{truck.height}} мм</p>
+              <p>Грузоподъемность: {{truck.weight / 1000}} т</p>
+              <p>Вместимость паллет: {{truck.pallets}} шт.</p>
+            </div>
+
+          </div>
+          <button class="btn btn-info btn-padding" (click)="chosenData.truck = truck">Выбрать</button>
         </div>
-      </div>
-      <svg class="bd-placeholder-img" width="100%" height="100%"
-           xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
-           focusable="false">
-        <rect width="100%" height="100%" fill="#777"></rect>
-      </svg>
-    </div>
-  </div>
-  <a class="carousel-control-prev" href="#truckCarousel" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#truckCarousel" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
 </div>

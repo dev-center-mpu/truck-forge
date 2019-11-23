@@ -12,6 +12,7 @@ import {ViewerModule} from 'ng2-adsk-forge-viewer';
 import {CheckChosenItemsComponent} from './components/check-chosen-items/check-chosen-items.component';
 import {CargoListComponent} from './components/cargo-list/cargo-list.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
