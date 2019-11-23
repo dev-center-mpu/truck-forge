@@ -1,19 +1,17 @@
-<div id="palletCarousel" class="carousel slide specdiv" data-ride="carousel">
-
-  <div class="right specdiv">
-      <div class=" navbar navbar-light">
+<div id="palletCarousel" class="container">
+  <div class="navbar navbar-light">
           <a class="navbar-brand" href="#">Выбор палетов</a>
         </div>
-    <div *ngFor="let pallet of pallets; let i = index">
-      <div class="container leftforblock navpalet">
-        <div class=" p-1 float-right font-weight-bold text-dark text-center spesforpalet mt-5 margin20 alert alert-info">
+    <div *ngFor="let pallet of pallets; let i = index" class="big">
+    
+        <div class=" p-1 font-weight-bold  text-dark text-center mt-4 alert alert-info"(click)="chosenData.pallet = pallet">
           <p>Длина: {{pallet.length}} мм</p>
           <p>Ширина: {{pallet.width}} мм</p>
           <p>Высота: {{pallet.height}} мм</p>
           <p>Вес: {{pallet.weight}} кг</p>
-          <button class="btn btn-info" (click)="chosenData.pallet = pallet">Выбрать</button>
+          <!-- <button class="btn btn-info" (click)="chosenData.pallet = pallet">Выбрать</button> -->
         </div>
-      </div>
-    </div>
+
+    
   </div>
 </div>
