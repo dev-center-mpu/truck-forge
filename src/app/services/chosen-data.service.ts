@@ -82,7 +82,7 @@ export class ChosenDataService {
   }
 
   palletIsChosen(): boolean {
-    return this.truck !== undefined;
+    return this.pallet !== undefined;
   }
 
   cargoIsChosen(): boolean {
