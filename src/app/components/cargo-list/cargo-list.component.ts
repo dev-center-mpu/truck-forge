@@ -10,7 +10,7 @@ export class CargoListComponent {
 
   @Output() calculate = new EventEmitter<{x: number, y: number, z: number}>();
 
-  constructor(private chosenData: ChosenDataService) {
+  constructor(public chosenData: ChosenDataService) {
   }
 
   massCalculation() {

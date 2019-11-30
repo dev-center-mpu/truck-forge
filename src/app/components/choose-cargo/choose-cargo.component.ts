@@ -11,7 +11,7 @@ export class ChooseCargoComponent {
 
   form: FormGroup;
 
-  constructor(private chosenData: ChosenDataService) {
+  constructor(public chosenData: ChosenDataService) {
     this.form = new FormGroup({
       length: new FormControl(null, [Validators.required]),
       width: new FormControl(null, [Validators.required]),

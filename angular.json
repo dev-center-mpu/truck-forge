@@ -39,6 +39,7 @@
           },
           "configurations": {
             "production": {
+              "crossOrigin": "anonymous",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

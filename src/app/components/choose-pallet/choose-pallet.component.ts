@@ -14,7 +14,7 @@ export class ChoosePalletComponent {
 
   constructor(
     private database: DatabaseService,
-    private chosenData: ChosenDataService
+    public chosenData: ChosenDataService
   ) {
     this.pallets = this.database.pallets;
   }
