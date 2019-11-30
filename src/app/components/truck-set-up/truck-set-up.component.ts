@@ -1,7 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DocumentChangedEvent, ThumbnailOptions, ViewerInitializedEvent, ViewerOptions } from 'ng2-adsk-forge-viewer';
 import { ServerForgeConnectionService } from '../../services/server-forge-connection.service';
 import { ChosenDataService } from '../../services/chosen-data.service';
+import { ObjectUnsubscribedError } from 'rxjs';
 
 declare const THREE: any;
 
@@ -240,9 +241,9 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
   }
 
   addMassCenter(obj) {
-    const errorCenterX = -obj.x;
-    const errorCenterY = -obj.y;
-    const errorCenterZ = -obj.z;
+    const errorCenterX = obj.y;
+    const errorCenterY = obj.x;
+    const errorCenterZ = obj.z;
     console.log(obj);
     const id = this.chosenData.truck.leftWallId;
     const centerBody = { nodeId: id, fragId: null, fragProxy: null, worldMatrix: null, position: null };
@@ -259,18 +260,45 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
     centerBody.position.copy(centerBody.worldMatrix.getPosition().clone());
 
     const geom = new THREE.SphereGeometry(100, 32, 32);
-    const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
     const sphere = new THREE.Mesh(geom, material);
     sphere.position.set(
-      0 - errorCenterX,
-      centerBody.position.z - errorCenterZ,
-      centerBody.position.y - errorCenterY
+      errorCenterX,
+      centerBody.position.z - this.chosenData.truck.height / 2 + this.chosenData.pallet.height + errorCenterZ,
+      centerBody.position.y + errorCenterY
     );
 
     this.viewer.impl.addOverlay('cScene', sphere);
+    this.checkResults(obj);
+    // if (obj.y < -200)
+    //   alert("Задняя часть кузова перегруженна");
+    // if (obj.y > 200)
+    //   alert("Передняя часть кузова перегруженна");
+    // if (obj.x > 200)
+    //   alert("Левая часть кузова перегруженна");
+    // if (obj.x < -200)
+    //   alert("Правая часть кузова перегруженна");
 
-    console.log(this.viewer.impl.overlayScenes);
-
+    // if (obj.y < -200 && obj.x > 200)
+    //   alert("Задняя левая часть кузова перегруженна");
+    // if (obj.y > 200 && obj.x > 200)
+    //   alert("Передняя левая часть кузова перегруженна");
+    // if (obj.y > 200 && obj.x < -200)
+    //   alert("Передняя правая часть кузова перегруженна");
+    // if (obj.y < -200 && obj.x < -200)
+    //   alert("Задняя правая часть кузова перегруженна");
     this.viewer.impl.invalidate(true);
+  }
+
+  checkResults(obj){
+    if (obj.y < -200 || obj.y > 200 || obj.x < -200 || obj.x > 200){
+      document.getElementById("alertMessage").style.display = "block";
+      (obj.y > 0) ? document.getElementById("alertText").textContent = "Передняя часть кузова перегруженна" : document.getElementById("alertText").textContent = "Задняя часть кузова перегруженна";
+      (obj.x > 0) ? document.getElementById("alertText").textContent = "Левая часть кузова перегруженна" : document.getElementById("alertText").textContent = "Правая часть кузова перегруженна";
+      (obj.x > 0 && obj.y > 0) ? document.getElementById("alertText").textContent = "Передняя левая часть кузова перегруженна" : "";
+      (obj.x < 0 && obj.y > 0) ? document.getElementById("alertText").textContent = "Передняя правая часть кузова перегруженна" : "";
+      (obj.x > 0 && obj.y < 0) ? document.getElementById("alertText").textContent = "Задняя левая часть кузова перегруженна" : "";
+      (obj.x < 0 && obj.y < 0) ? document.getElementById("alertText").textContent = "Задняя правая часть кузова перегруженна" : "";
+    }
   }
 }

@@ -16,4 +16,8 @@ export class CargoListComponent {
   massCalculation() {
     this.calculate.emit(this.chosenData.massCenterCalculation());
   }
+
+  changeDisplay(){
+    document.getElementById("alertMessage").style.display = "none";
+  }
 }

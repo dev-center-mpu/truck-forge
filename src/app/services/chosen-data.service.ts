@@ -27,34 +27,34 @@ export class ChosenDataService {
     let massX = 0;
     i = 0;
     for (const palletsLine of this.pallets) {
-      i += 1;
       for (const pallet of palletsLine) {
         const crate = pallet.crate;
         if (crate !== undefined) {
-          const offset = +this.pallet.length * +i - +this.pallet.length / 2;
-          massCenterXTemp += +offset * +crate.weight;
-          massX += +crate.weight;
+          const offset = +this.pallet.length * +i + +this.pallet.length / 2
+          massCenterXTemp += +offset * +crate.weight / 1000;
+          massX += +crate.weight / 1000;
         }
       }
+      i += 1;
     }
-    const massCenterX = (this.truck.length / 2) - (massCenterXTemp / massX);
 
+    const massCenterX = (this.truck.length / 2) - (massCenterXTemp / massX);
     // Mass center by Y
     let massCenterYTemp = 0;
     let massY = 0;
     for (const palletsLine of this.pallets) {
       i = 0;
       for (const pallet of palletsLine) {
-        i += 1;
         const crate = pallet.crate;
         if (crate !== undefined) {
-          const offset = +this.pallet.width * +i - +this.pallet.width / 2;
-          massCenterYTemp += +offset * +crate.weight;
-          massY += +crate.weight;
+          const offset = +this.pallet.width * +i + +this.pallet.width / 2;
+          massCenterYTemp += +offset * +crate.weight / 1000;
+          massY += +crate.weight / 1000;
         }
+        i += 1;
       }
     }
-    const massCenterY = (this.truck.width / 2) - massCenterYTemp / massY;
+    const massCenterY = (this.truck.width / 2) - (massCenterYTemp / massY);
 
     // Mass center by Z
     let massCenterZTemp = 0;
@@ -63,8 +63,8 @@ export class ChosenDataService {
       for (const pallet of palletsLine) {
         const crate = pallet.crate;
         if (crate !== undefined) {
-          massCenterZTemp += +crate.weight * +crate.height / 2;
-          massZ += +crate.weight;
+          massCenterZTemp += +crate.weight / 1000 * +crate.height / 2;
+          massZ += +crate.weight / 1000;
         }
       }
     }
