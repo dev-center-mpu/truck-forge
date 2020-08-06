@@ -8,12 +8,15 @@ import {Observable} from 'rxjs';
 })
 export class ServerForgeConnectionService {
 
-  private url = 'http://127.0.0.1:3000/auth';
+  private url: string;
   private options: HttpHeaders;
 
   constructor(public http: HttpClient) {
     this.options = new HttpHeaders();
     this.options = this.options.set('Content-Type', 'application/json');
+
+    const port = window.location.port === '' ? '' : `:${window.location.port}`;
+    this.url = `http://${window.location.hostname}${port}/truck-forge/auth`;
   }
 
   public get(header: HttpHeaders): Observable<any> {

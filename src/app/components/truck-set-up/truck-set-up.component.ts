@@ -166,9 +166,11 @@ export class TruckSetUpComponent implements OnInit, OnDestroy {
       geom.userData = crate;
       this.chosenData.crate = undefined;
 
+
       const loader = new THREE.TextureLoader();
       loader.load(
-        '../../../assets/crate.gif', // src
+        //@ts-ignore
+        require('../../../assets/crate.gif'), // src
         texture => { // onSuccess
           const material = new THREE.MeshBasicMaterial({ map: texture });
           material.opacity = 0.5;
